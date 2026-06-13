@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Static multi-page generator for the IAS redesign preview.
 Keeps nav/footer/head DRY; emits standalone files that work over file://."""
-import os
+import os, json
 OUT = os.path.dirname(os.path.abspath(__file__))
 
 # ---------- reusable SVG icons ----------
@@ -61,6 +61,7 @@ HEAD = """<!DOCTYPE html>
 "knowsAbout":["ICP-MS testing","ASTM testing","dialysis water testing","endotoxin testing","PFAS analysis","trace metals analysis","failure analysis","environmental testing"],
 "sameAs":["https://iasamerica.com/"]}
 </script>
+__HEADEXTRA__
 </head>
 <body>
 """
@@ -72,9 +73,26 @@ NAV_ITEMS = [("about","About IAS","about.html"),
              ("pricing","Pricing","pricing.html"),
              ("contact","Contact","contact.html")]
 
+def industries_mega():
+    items = "".join(
+        '<a class="mega-link" href="%s"><span class="mi">%s</span><span class="mt">%s</span></a>'
+        % (slug, svg(ic), nm) for nm, ic, desc, slug in INDUSTRIES)
+    return ('<div class="mega"><div class="mega-grid">%s</div>'
+            '<a class="mega-foot" href="industries.html">View all industries %s</a></div>') % (items, ARROW)
+
 def nav(active):
-    links = "".join('<a href="%s"%s>%s</a>' % (href, ' class="active"' if key==active else '', label)
-                    for key,label,href in NAV_ITEMS)
+    chev = svg('<path d="M6 9l6 6 6-6"/>')
+    parts = []
+    for key, label, href in NAV_ITEMS:
+        if key == "industries":
+            parts.append(
+                '<div class="nav-item has-mega"><div class="nav-row">'
+                '<a href="%s" class="nav-top%s">%s</a>'
+                '<button class="mega-toggle" type="button" aria-label="Show industries" aria-expanded="false">%s</button>'
+                '</div>%s</div>' % (href, " active" if key == active else "", label, chev, industries_mega()))
+        else:
+            parts.append('<a href="%s"%s>%s</a>' % (href, ' class="active"' if key == active else '', label))
+    links = "".join(parts)
     return """<header class="nav" id="nav">
   <div class="wrap nav-inner">
     <a href="index.html" class="brand"><img src="assets/ias-logo.png" alt="Industrial Analytical Services" /></a>
@@ -202,12 +220,13 @@ def og_title_of(title):
     t = title.rsplit(" | ", 1)[0] if " | " in title else title
     return t
 
-def write(name, title, desc, active, body):
+def write(name, title, desc, active, body, head_extra=""):
     canon = BASE_URL if name == "index.html" else BASE_URL + name
     html = (HEAD.replace("__TITLE__", title)
                 .replace("__OGTITLE__", og_title_of(title))
                 .replace("__DESC__", desc)
                 .replace("__CANON__", canon)
+                .replace("__HEADEXTRA__", head_extra)
             + nav(active) + body + FOOTER)
     with open(os.path.join(OUT, name), "w") as f:
         f.write(html)
@@ -215,23 +234,24 @@ def write(name, title, desc, active, body):
 
 # ============================================================ shared content blocks
 INDUSTRIES = [
- ("Pharmaceutical &amp; Biotech",'<path d="M10 2v6.5L4.5 18A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-3L14 8.5V2"/><path d="M8.5 2h7M7 15h10"/>',"Raw material &amp; in-process QC, endotoxin &amp; mycoplasma screening, release testing, process water."),
- ("Medical Devices",'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/>',"Endotoxin testing, biocompatibility support, material characterization, trace metals."),
- ("Dialysis &amp; Healthcare",'<path d="M3 12h4l2 6 4-12 2 6h6"/>',"Full-panel dialysis water quality to AAMI/ANSI standards, with easy scheduled submission."),
- ("Hospitals &amp; Clinical Research",'<path d="M6 2h12v6a4 4 0 0 1-4 4 4 4 0 0 1-4-4V2"/><path d="M6 22h12v-6a4 4 0 0 0-4-4 4 4 0 0 0-4 4z"/>',"Blood, serum &amp; tissue analysis for research — metals, toxicology, organics, chain-of-custody."),
- ("Veterinary &amp; Animal Health",'<path d="M11 2a3 3 0 0 0-3 3c0 1 .5 2 .5 2H6a4 4 0 0 0 0 8c1 3 4 5 6 5 3 0 5-2 5-5a4 4 0 0 0 1-7.9"/>',"Blood &amp; tissue toxicology — metals, pesticides &amp; contaminants in biological samples."),
- ("Industrial &amp; Process",'<path d="M3 21V8l6-3v3l6-3v3l6-3v16z"/><path d="M9 21v-5M15 21v-5"/>',"Process stream monitoring, cooling tower chemistry, raw material QC, failure analysis."),
- ("Chemical Production",'<path d="M9 3h6v5l4 9a2 2 0 0 1-1.8 3H6.8A2 2 0 0 1 5 17l4-9z"/><path d="M8 14h8"/>',"Purity verification, solvent residuals, molecular ID via NMR &amp; FTIR, custom method development."),
- ("Food &amp; Beverage",'<path d="M5 11a7 7 0 0 1 14 0v3l2 4H3l2-4z"/><path d="M9 18a3 3 0 0 0 6 0"/>',"Microbiology, pesticide residues, metals, mycotoxins &amp; process water quality."),
- ("Water &amp; Municipal Utilities",'<path d="M12 2v4M5 8c3 2 11 2 14 0M4 12c4 2.5 12 2.5 16 0M5 16c3 2 11 2 14 0M12 18v4"/>',"Full inorganic, organic &amp; microbiological panels for treated, process &amp; waste water."),
- ("Environmental &amp; Remediation",'<path d="M12 2C8 7 6 10 6 14a6 6 0 0 0 12 0c0-4-2-7-6-12z"/>',"Soil &amp; water for metals, VOCs, SVOCs, pesticides, PCBs &amp; PFAS — litigation-quality docs."),
- ("Research &amp; Development",'<path d="M2 12a10 10 0 0 1 20 0"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2M22 12h-2M12 22v-2M2 12h2"/>',"Flexible custom analytical support for any matrix — no standing account for pilot-phase work."),
- ("Property &amp; Facilities",'<path d="M3 21V7l9-4 9 4v14"/><path d="M9 21v-6h6v6"/>',"Indoor air, water &amp; material testing — asbestos, lead in paint, mold &amp; VOCs, quick turnaround."),
+ ("Pharmaceutical &amp; Biotech",'<path d="M10 2v6.5L4.5 18A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-3L14 8.5V2"/><path d="M8.5 2h7M7 15h10"/>',"Raw material &amp; in-process QC, endotoxin &amp; mycoplasma screening, release testing, process water.","pharmaceutical-testing.html"),
+ ("Medical Devices",'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/>',"Endotoxin testing, biocompatibility support, material characterization, trace metals.","medical-device-testing.html"),
+ ("Dialysis &amp; Healthcare",'<path d="M3 12h4l2 6 4-12 2 6h6"/>',"Full-panel dialysis water quality to AAMI/ANSI standards, with easy scheduled submission.","dialysis-water-testing.html"),
+ ("Hospitals &amp; Clinical Research",'<path d="M6 2h12v6a4 4 0 0 1-4 4 4 4 0 0 1-4-4V2"/><path d="M6 22h12v-6a4 4 0 0 0-4-4 4 4 0 0 0-4 4z"/>',"Blood, serum &amp; tissue analysis for research — metals, toxicology, organics, chain-of-custody.","clinical-research-testing.html"),
+ ("Veterinary &amp; Animal Health",'<path d="M11 2a3 3 0 0 0-3 3c0 1 .5 2 .5 2H6a4 4 0 0 0 0 8c1 3 4 5 6 5 3 0 5-2 5-5a4 4 0 0 0 1-7.9"/>',"Blood &amp; tissue toxicology — metals, pesticides &amp; contaminants in biological samples.","veterinary-toxicology-testing.html"),
+ ("Industrial &amp; Process",'<path d="M3 21V8l6-3v3l6-3v3l6-3v16z"/><path d="M9 21v-5M15 21v-5"/>',"Process stream monitoring, cooling tower chemistry, raw material QC, failure analysis.","industrial-process-testing.html"),
+ ("Chemical Production",'<path d="M9 3h6v5l4 9a2 2 0 0 1-1.8 3H6.8A2 2 0 0 1 5 17l4-9z"/><path d="M8 14h8"/>',"Purity verification, solvent residuals, molecular ID via NMR &amp; FTIR, custom method development.","chemical-testing.html"),
+ ("Food &amp; Beverage",'<path d="M5 11a7 7 0 0 1 14 0v3l2 4H3l2-4z"/><path d="M9 18a3 3 0 0 0 6 0"/>',"Microbiology, pesticide residues, metals, mycotoxins &amp; process water quality.","food-beverage-testing.html"),
+ ("Water &amp; Municipal Utilities",'<path d="M12 2v4M5 8c3 2 11 2 14 0M4 12c4 2.5 12 2.5 16 0M5 16c3 2 11 2 14 0M12 18v4"/>',"Full inorganic, organic &amp; microbiological panels for treated, process &amp; waste water.","water-testing.html"),
+ ("Environmental &amp; Remediation",'<path d="M12 2C8 7 6 10 6 14a6 6 0 0 0 12 0c0-4-2-7-6-12z"/>',"Soil &amp; water for metals, VOCs, SVOCs, pesticides, PCBs &amp; PFAS — litigation-quality docs.","environmental-testing.html"),
+ ("Research &amp; Development",'<path d="M2 12a10 10 0 0 1 20 0"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2M22 12h-2M12 22v-2M2 12h2"/>',"Flexible custom analytical support for any matrix — no standing account for pilot-phase work.","rd-analytical-testing.html"),
+ ("Property &amp; Facilities",'<path d="M3 21V7l9-4 9 4v14"/><path d="M9 21v-6h6v6"/>',"Indoor air, water &amp; material testing — asbestos, lead in paint, mold &amp; VOCs, quick turnaround.","facilities-testing.html"),
 ]
 def industries_grid(extra_class=""):
     cards = "".join(
-      '<div class="ind-card reveal"><div class="ico">%s</div><h4>%s</h4><p>%s</p></div>' % (svg(ic), nm, desc)
-      for nm,ic,desc in INDUSTRIES)
+      '<a class="ind-card reveal" href="%s"><div class="ico">%s</div><h4>%s</h4><p>%s</p>'
+      '<span class="ind-more">Explore %s</span></a>' % (slug, svg(ic), nm, desc, ARROW)
+      for nm,ic,desc,slug in INDUSTRIES)
     return '<div class="ind%s">%s</div>' % ((" "+extra_class) if extra_class else "", cards)
 
 INSTRUMENTS = [
@@ -612,6 +632,144 @@ write("industries.html","Industries We Serve — Pharma, Environmental, Industri
       "IAS serves pharmaceutical, medical device, dialysis, clinical, veterinary, industrial, chemical, food &amp; beverage, water, environmental, R&amp;D and facilities clients.",
       "industries", ind)
 
+# ============================================================ INDUSTRY DETAIL PAGES
+# A block-palette engine: every industry composes its own ordered "layout" recipe
+# from the blocks below, with its own accent + copy, so no two pages are clones.
+CHEV = svg('<path d="M9 6l6 6-6 6"/>')
+ICOS = ["ic-blue", "ic-orange", "ic-gold", "ic-navy"]
+INSTR_BY = {a: (a, full, desc, apps) for a, full, desc, apps in INSTRUMENTS}
+NAME_BY_SLUG = {slug: (nm, ic) for nm, ic, desc, slug in INDUSTRIES}
+
+def _sec(inner, cls=""):
+    return '<section class="section%s"><div class="wrap">%s</div></section>' % ((" " + cls) if cls else "", inner)
+
+def ihead(eyebrow, h2, p=""):
+    pp = '<p>%s</p>' % p if p else ""
+    return ('<div class="section-head reveal"><span class="eyebrow"><span class="dot"></span>%s</span>'
+            '<h2 style="margin-top:16px">%s</h2>%s</div>') % (eyebrow, h2, pp)
+
+def ind_hero(d):
+    cb = ('<div class="breadcrumb"><a href="index.html">Home</a> %s '
+          '<a href="industries.html">Industries</a> %s <span>%s</span></div>') % (CHEV, CHEV, d["card_name"])
+    ctas = ('<a href="get-started.html" class="btn btn-primary">Submit a sample %s</a>'
+            '<a href="pricing.html" class="btn btn-outline-white">View pricing</a>') % ARROW
+    return ('<section class="page-hero"><div class="wrap">%s'
+            '<span class="eyebrow light"><span class="dot"></span>%s</span>'
+            '<h1 style="margin-top:14px">%s</h1><p>%s</p>'
+            '<div class="hero-cta">%s</div></div></section>') % (cb, d["eyebrow"], d["h1"], d["hero_p"], ctas)
+
+def ib_overview(d):
+    paras = "".join('<p>%s</p>' % p for p in d["paragraphs"])
+    bullets = "".join('<li>%s%s</li>' % (CHECK, s) for s in d["solutions"])
+    prose = ('<div class="prose reveal"><h2>%s</h2><p class="lead">%s</p>%s'
+             '<ul class="check-list">%s</ul></div>') % (d["overview_h2"], d["lead"], paras, bullets)
+    media = ('<div class="split-media reveal"><div class="badge-float">'
+             '<div class="big">%s</div><div class="cap">%s</div></div></div>') % (d["media"][0], d["media"][1])
+    inner = (media + prose) if d.get("media_left") else (prose + media)
+    return '<section class="section"><div class="wrap split">%s</div></section>' % inner
+
+def ib_challenges(d):
+    cards = "".join('<div class="card reveal"><div class="ico %s">%s</div><h3>%s</h3><p>%s</p></div>'
+                    % (ICOS[i % 4], svg(ic), t, x) for i, (ic, t, x) in enumerate(d["challenges"]))
+    n = len(d["challenges"])
+    grid = '<div class="cards%s">%s</div>' % (" two" if n == 2 else "", cards)
+    return _sec(ihead(d.get("ch_eyebrow", "The challenge"), d["ch_h2"], d.get("ch_p", "")) + grid, "bg-soft")
+
+def ib_tests(d):
+    rows = "".join('<tr><td>%s</td><td>%s</td><td class="price%s">%s</td></tr>'
+                   % (nm, cat, " call" if pr.lower().startswith("call") else "", pr)
+                   for nm, cat, pr in d["tests"])
+    table = ('<div class="catalog reveal"><div class="table-scroll"><table class="cat">'
+             '<thead><tr><th>Test / Analysis</th><th>Typical method</th><th class="r">From</th></tr></thead>'
+             '<tbody>%s</tbody></table></div>'
+             '<div class="catalog-foot"><span>Representative pricing · bottles &amp; submission materials included · rush available</span>'
+             '<span>Need a test not listed here? <a href="contact.html" style="color:var(--blue);font-weight:700">Ask the lab →</a></span>'
+             '</div></div>') % rows
+    return _sec(ihead(d.get("t_eyebrow", "Pricing &amp; tests"), d["t_h2"], d.get("t_p", "")) + table)
+
+def ib_standards(d):
+    chips = "".join('<span class="std-chip">%s</span>' % s for s in d["standards"])
+    body = ('<div class="std-band reveal"><div class="std-copy"><span class="eyebrow"><span class="dot"></span>%s</span>'
+            '<h3>%s</h3><p>%s</p></div><div class="std-chips">%s</div></div>') % (
+        d.get("std_eyebrow", "Standards &amp; compliance"), d["std_h2"], d["std_p"], chips)
+    return _sec(body)
+
+def ib_instruments(d):
+    cards = "".join('<div class="inst-card reveal"><div class="abbr"><span class="b"></span>%s</div>'
+                    '<div class="full">%s</div><p>%s</p>'
+                    '<div class="apps"><b>For %s:</b> %s</div></div>'
+                    % (a, INSTR_BY[a][1], INSTR_BY[a][2], d["name_short"], use)
+                    for a, use in d["instruments"])
+    return _sec(ihead(d.get("i_eyebrow", "Instrumentation"), d["i_h2"], d.get("i_p", ""))
+                + '<div class="inst">%s</div>' % cards, "bg-soft")
+
+def ib_matrices(d):
+    items = "".join('<div class="vitem reveal"><div class="ico">%s</div><h4>%s</h4><p>%s</p></div>'
+                    % (svg(ic), t, x) for ic, t, x in d["matrices"])
+    return _sec(ihead(d.get("m_eyebrow", "What we test"), d["m_h2"], d.get("m_p", ""))
+                + '<div class="vrow">%s</div>' % items)
+
+def ib_process(d):
+    return _sec(ihead(d.get("p_eyebrow", "How it works"), d.get("p_h2", "From sample to answer in three steps"),
+                      d.get("p_p", "")) + STEPS, "bg-soft")
+
+def ib_faq(d):
+    items = "".join('<details><summary>%s</summary><p>%s</p></details>' % (q, a) for q, a in d["faqs"])
+    return _sec(ihead(d.get("f_eyebrow", "Questions"), d.get("f_h2", "Frequently asked questions"))
+                + '<div class="faq reveal">%s</div>' % items)
+
+def ib_custom(d):
+    ico = svg('<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>')
+    return ('<section class="section"><div class="wrap"><div class="custom-band reveal">'
+            '<div class="cb-ico">%s</div><div class="cb-body">'
+            '<span class="eyebrow"><span class="dot"></span>Custom &amp; flexible work</span>'
+            '<h3>%s</h3><p>%s</p>'
+            '<div class="hero-cta"><a href="contact.html" class="btn btn-primary">Talk to a chemist %s</a>'
+            '<a href="custom-testing.html" class="btn btn-ghost">Custom &amp; one-time testing</a></div>'
+            '</div></div></div></section>') % (
+        ico, d.get("custom_h2", "Don't see exactly what you need?"), d["custom_line"], ARROW)
+
+def ib_related(d):
+    cards = "".join('<a class="rel-card reveal" href="%s"><div class="ico">%s</div><span>%s</span>%s</a>'
+                    % (s, svg(NAME_BY_SLUG[s][1]), NAME_BY_SLUG[s][0], ARROW) for s in d["related"])
+    return _sec(ihead("Related industries", d.get("r_h2", "Explore related testing programs"))
+                + '<div class="rel-grid">%s</div>' % cards)
+
+def ib_cta(d):
+    return cta_band(d["cta_title"], d["cta_text"],
+                    primary=("Request a consultation", "contact.html"),
+                    secondary=("Submit a sample", "get-started.html"))
+
+IBLOCKS = {"overview": ib_overview, "challenges": ib_challenges, "tests": ib_tests,
+           "standards": ib_standards, "instruments": ib_instruments, "matrices": ib_matrices,
+           "process": ib_process, "faq": ib_faq, "custom": ib_custom, "related": ib_related, "cta": ib_cta}
+
+def _txt(s):
+    return s.replace("&amp;", "&").replace("&nbsp;", " ")
+
+def ind_jsonld(d):
+    url = BASE_URL + d["slug"]
+    service = {"@context": "https://schema.org", "@type": "Service",
+               "serviceType": _txt(d["service_type"]), "name": _txt(d["h1"]),
+               "provider": {"@type": "MedicalBusiness", "name": "Industrial Analytical Services", "url": BASE_URL},
+               "areaServed": "US", "url": url, "description": _txt(d["meta_desc"])}
+    crumbs = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL},
+        {"@type": "ListItem", "position": 2, "name": "Industries", "item": BASE_URL + "industries.html"},
+        {"@type": "ListItem", "position": 3, "name": _txt(d["card_name"]), "item": url}]}
+    faq = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": _txt(q),
+         "acceptedAnswer": {"@type": "Answer", "text": _txt(a)}} for q, a in d["faqs"]]}
+    return "".join('<script type="application/ld+json">%s</script>\n' % json.dumps(b, ensure_ascii=False)
+                   for b in (service, crumbs, faq))
+
+def build_industry(d):
+    body = '<div class="ipage acc-%s">' % d["accent"] + ind_hero(d)
+    for key in d["layout"]:
+        body += IBLOCKS[key](d)
+    body += "</div>"
+    write(d["slug"], d["title"], d["meta_desc"], "industries", body, head_extra=ind_jsonld(d))
+
 # ============================================================ PRICING
 pricing = page_hero("Pricing &amp; Test Catalog","Lab pricing, about as simple as it gets.",
    "Standard tests have standard prices. Heavy metals on a liquid sample? $190. SEM analysis? $250. Search the full catalog below — and for anything custom, just call.",
@@ -679,6 +837,548 @@ contact = page_hero("Contact &amp; Consultation","Talk to a chemist — most con
 write("contact.html","Contact &amp; Consultation — Industrial Analytical Services",
       "Contact IAS: call (978) 466-3422, email info@iasamerica.com, or visit 60 Elm Hill Ave., Leominster, MA. Free consultations, fast replies, no account required.",
       "contact", contact)
+
+# ============================================================ INDUSTRY PAGE DATA
+# reusable icon paths for matrices / challenge cards
+_I = {
+ "drop":'<path d="M12 2C8 7 6 10 6 14a6 6 0 0 0 12 0c0-4-2-7-6-12z"/>',
+ "wave":'<path d="M12 2v4M5 8c3 2 11 2 14 0M4 12c4 2.5 12 2.5 16 0M5 16c3 2 11 2 14 0M12 18v4"/>',
+ "flask":'<path d="M9 3h6v5l4 9a2 2 0 0 1-1.8 3H6.8A2 2 0 0 1 5 17l4-9z"/><path d="M8 14h8"/>',
+ "vial":'<path d="M10 2v6.5L4.5 18A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-3L14 8.5V2"/><path d="M8.5 2h7"/>',
+ "factory":'<path d="M3 21V8l6-3v3l6-3v3l6-3v16z"/><path d="M9 21v-5M15 21v-5"/>',
+ "shield":'<path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7z"/><path d="M9 12l2 2 4-4"/>',
+ "search":'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+ "clip":'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+ "clock":'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ "blood":'<path d="M6 2h12v6a4 4 0 0 1-4 4 4 4 0 0 1-4-4V2"/><path d="M6 22h12v-6a4 4 0 0 0-4-4 4 4 0 0 0-4 4z"/>',
+ "leaf":'<path d="M11 20A7 7 0 0 1 4 13c0-6 6-11 16-11 0 10-5 16-11 16z"/><path d="M4 21c4-6 8-8 12-9"/>',
+ "build":'<path d="M3 21V7l9-4 9 4v14"/><path d="M9 21v-6h6v6"/>',
+ "food":'<path d="M5 11a7 7 0 0 1 14 0v3l2 4H3l2-4z"/><path d="M9 18a3 3 0 0 0 6 0"/>',
+ "atom":'<circle cx="12" cy="12" r="2"/><path d="M12 2a14 6 0 0 0 0 20M12 2a14 6 0 0 1 0 20" transform="rotate(60 12 12)"/><path d="M2 12a6 14 0 0 0 20 0" transform="rotate(60 12 12)"/>',
+ "paw":'<path d="M11 2a3 3 0 0 0-3 3c0 1 .5 2 .5 2H6a4 4 0 0 0 0 8c1 3 4 5 6 5 3 0 5-2 5-5a4 4 0 0 0 1-7.9"/>',
+ "doc":'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+ "bug":'<path d="M8 2l1.5 2M16 2l-1.5 2M5 11H2M22 11h-3M6 20l-2 2M18 20l2 2"/><rect x="7" y="6" width="10" height="12" rx="5"/>',
+}
+
+INDUSTRY_PAGES = [
+ # ---------------------------------------------------------------- 1. Pharmaceutical
+ {"slug":"pharmaceutical-testing.html","card_name":"Pharmaceutical &amp; Biotech","accent":"blue",
+  "name_short":"pharma QC","eyebrow":"Pharmaceutical &amp; Biotech Testing",
+  "h1":"Pharmaceutical &amp; biotech analytical testing",
+  "hero_p":"Raw-material identity, in-process QC, endotoxin and mycoplasma screening, elemental impurities, and finished-product release testing — with documentation your auditors will accept.",
+  "title":"Pharmaceutical Testing Lab — Raw Material QC, Endotoxin &amp; Release Testing | IAS",
+  "meta_desc":"Pharmaceutical and biotech analytical testing from IAS: raw material identity and QC, bacterial endotoxin (LAL), mycoplasma screening, ICH Q3D elemental impurities, USP purified water and finished-product release testing.",
+  "service_type":"Pharmaceutical Analytical Testing",
+  "layout":["overview","standards","tests","instruments","process","faq","custom","related","cta"],
+  "overview_h2":"A contract lab that keeps your batches moving",
+  "lead":"From incoming raw materials to final release, IAS gives pharmaceutical and biotech manufacturers the analytical depth — and the turnaround — to keep production on schedule and inspectors satisfied.",
+  "paragraphs":["Whether you are qualifying a new excipient supplier, investigating an out-of-spec result, or running routine release testing, our chemists work alongside your QC team rather than behind a portal.",
+                "Standard analyses carry catalog pricing, repeat submissions are simple once an account is open, and one-off investigations are always welcome."],
+  "solutions":["Raw-material identity &amp; purity verification by NMR and FTIR",
+               "Bacterial endotoxin (LAL) and mycoplasma screening",
+               "Elemental impurities to ICH Q3D / USP &lt;232&gt;&amp;&lt;233&gt; by ICP-MS",
+               "USP purified water &amp; water-for-injection system monitoring",
+               "In-process checks and finished-product release testing"],
+  "media":("USP","Elemental impurities · endotoxin · release"),
+  "std_h2":"Built for regulated release","std_eyebrow":"Standards we work to",
+  "std_p":"We run to recognized compendial and ICH expectations, with reporting and chain-of-custody suited to audited environments.",
+  "standards":["USP &lt;85&gt; Endotoxin","USP &lt;61&gt;/&lt;62&gt; Microbial","ICH Q3D","USP &lt;232&gt;/&lt;233&gt;","USP &lt;645&gt; Water Conductivity","USP &lt;467&gt; Residual Solvents"],
+  "t_h2":"Common pharmaceutical tests &amp; pricing","t_p":"A representative slice of routine pharma work — anything compendial or custom can be quoted on a call.",
+  "tests":[("Elemental impurities panel (ICH Q3D)","ICP-MS","$190"),
+           ("Bacterial endotoxin (LAL)","Kinetic / gel-clot","$120"),
+           ("Mycoplasma screening","Culture / PCR","Call to quote"),
+           ("Residual solvents","GC-MS","$150"),
+           ("Compound / API identity","NMR","$280"),
+           ("USP purified water suite","Conductivity · TOC · microbial","$165")],
+  "i_h2":"The instruments behind pharma release",
+  "instruments":[("ICP-MS","elemental impurity panels to USP &lt;232&gt;/&lt;233&gt; on drug substance, excipients and process water"),
+                 ("NMR","structural confirmation and identity of APIs, intermediates and reference standards"),
+                 ("FTIR","incoming raw-material identity verified against your specification")],
+  "p_h2":"From batch sample to release decision","p_p":"No formal account is required to send your first sample for evaluation.",
+  "faqs":[("Do you perform USP &lt;232&gt;/&lt;233&gt; elemental impurities testing?","Yes. We run ICH Q3D elemental impurity panels by ICP-MS on drug substances, excipients, finished products and process water, with reporting against your established permitted daily exposures."),
+          ("Can you support a release-testing program with recurring submissions?","Absolutely. Many pharmaceutical clients run scheduled release and stability-support testing with us. We open a simple account so repeat submissions and reporting stay consistent."),
+          ("Do you handle bacterial endotoxin (LAL) and mycoplasma?","Yes — kinetic and gel-clot LAL endotoxin testing and mycoplasma screening to support biologics, sterile products and medical-device clients."),
+          ("Can you develop a method for a non-compendial impurity?","We do. Custom method development and validation support is part of our routine work, including non-compendial impurities and difficult matrices."),
+          ("Is an account required to send a single sample?","No. You can submit a one-time sample for investigation or qualification without opening an account.")],
+  "custom_h2":"Beyond the compendium",
+  "custom_line":"Method transfer, a non-compendial impurity, a stubborn excipient matrix, or a deviation investigation — we develop and run custom analytical methods for pharma and biotech, and you can send a single sample without ever opening an account.",
+  "related":["medical-device-testing.html","chemical-testing.html","dialysis-water-testing.html"],
+  "cta_title":"Keep your batches on schedule","cta_text":"Talk to a chemist about your release, raw-material or impurity testing — most consultations are included at no charge."},
+
+ # ---------------------------------------------------------------- 2. Medical Devices
+ {"slug":"medical-device-testing.html","card_name":"Medical Devices","accent":"cyan",
+  "name_short":"device makers","eyebrow":"Medical Device Testing",
+  "h1":"Medical device analytical &amp; biocompatibility-support testing",
+  "hero_p":"Endotoxin testing, extractables and leachables, material characterization, and trace-metal analysis to support your biocompatibility and regulatory submissions.",
+  "title":"Medical Device Testing Lab — Endotoxin, Extractables &amp; Material ID | IAS",
+  "meta_desc":"Medical device analytical testing from IAS: bacterial endotoxin (LAL), extractables and leachables, ISO 10993 biocompatibility support, material characterization by FTIR/SEM-EDS and trace metals by ICP-MS.",
+  "service_type":"Medical Device Analytical Testing",
+  "layout":["challenges","overview","standards","tests","matrices","faq","custom","related","cta"],
+  "ch_h2":"What device makers come to us for","ch_eyebrow":"Where we help",
+  "challenges":[(_I["shield"],"Biocompatibility data","Chemical characterization and extractables/leachables data to feed your ISO 10993-18 risk assessment."),
+                (_I["vial"],"Endotoxin &amp; sterility support","Bacterial endotoxin (LAL) testing on devices, components and rinse solutions."),
+                (_I["search"],"Material confirmation","Polymer and metal ID, plus surface and particulate analysis when something looks wrong.")],
+  "overview_h2":"Analytical support across the device lifecycle",
+  "lead":"From material selection through design verification and ongoing lot release, IAS provides the chemistry that underpins device safety and regulatory submissions.",
+  "paragraphs":["We characterize the materials your device is made of, quantify what could migrate out of them, and verify cleanliness and trace-metal content — then document it for your file.",
+                "Single components, finished devices, or recurring lot-release work are all welcome, with or without a standing account."],
+  "solutions":["Bacterial endotoxin (LAL) on devices &amp; rinse solutions",
+               "Extractables &amp; leachables study support",
+               "Polymer &amp; elastomer identification by FTIR",
+               "Surface, coating &amp; particulate analysis by SEM/EDS",
+               "Trace metals &amp; elemental content by ICP-MS"],
+  "media":("ISO","10993 chemical characterization support"),
+  "media_left":True,
+  "std_h2":"Aligned to device expectations","std_eyebrow":"Frameworks we support",
+  "std_p":"Our chemical characterization, endotoxin and material-ID work is structured to feed recognized biocompatibility and quality frameworks.",
+  "standards":["ISO 10993-18","ISO 10993-1","USP &lt;85&gt; Endotoxin","ANSI/AAMI ST72","USP &lt;661&gt; Plastics","ICP-MS Trace Metals"],
+  "t_h2":"Representative device tests","t_p":"",
+  "tests":[("Bacterial endotoxin (LAL)","Kinetic / gel-clot","$120"),
+           ("Extractables / leachables study","GC-MS · ICP-MS","Call to quote"),
+           ("Polymer / material identification","FTIR","$135"),
+           ("Surface &amp; particulate analysis","SEM/EDS","$250"),
+           ("Trace metals on device material","ICP-MS","$190")],
+  "m_h2":"Sample types we handle","m_eyebrow":"Matrices",
+  "matrices":[(_I["build"],"Finished devices &amp; components","Implants, instruments, tubing, connectors and packaging."),
+              (_I["drop"],"Extracts &amp; rinse solutions","Simulated-use extracts and final rinse waters."),
+              (_I["flask"],"Raw materials","Polymers, elastomers, coatings and metals before they enter the build.")],
+  "faqs":[("Can you support an ISO 10993-18 chemical characterization?","Yes. We generate extractables/leachables and elemental data structured to support your ISO 10993-18 chemical characterization and the toxicological risk assessment built on it."),
+          ("Do you test bacterial endotoxin on finished devices?","We do — LAL endotoxin testing on devices, components and rinse solutions, including support for routine lot release."),
+          ("Can you identify an unknown material or particulate on a device?","Yes. FTIR identifies polymers and organics while SEM/EDS images and analyzes surfaces, coatings and particulate contamination."),
+          ("Do I need an account to send one component?","No. One-off submissions are welcome — useful for failure investigations or qualifying a new material.")],
+  "custom_h2":"Unusual device, unusual question",
+  "custom_line":"Novel material, an odd particulate, a cleaning-validation rinse, or a one-off failure investigation — we will scope a custom approach for any device chemistry challenge, no standing account required.",
+  "related":["pharmaceutical-testing.html","clinical-research-testing.html","chemical-testing.html"],
+  "cta_title":"Build your device file on solid data","cta_text":"Tell us where you are in the lifecycle and we will recommend the right characterization and release testing."},
+
+ # ---------------------------------------------------------------- 3. Dialysis & Healthcare
+ {"slug":"dialysis-water-testing.html","card_name":"Dialysis &amp; Healthcare","accent":"teal",
+  "name_short":"dialysis clinics","eyebrow":"Dialysis Water Testing",
+  "h1":"Dialysis water &amp; dialysate testing to AAMI standards",
+  "hero_p":"Full-panel dialysis water quality — chemical contaminants, microbial counts and bacterial endotoxin — to ANSI/AAMI standards, with scheduled submission that keeps your program audit-ready.",
+  "title":"Dialysis Water Testing — AAMI Chemical, Microbial &amp; Endotoxin Panels | IAS",
+  "meta_desc":"Dialysis water testing from IAS to ANSI/AAMI standards: chemical contaminant panels, microbial counts and bacterial endotoxin for dialysis water and dialysate, with easy scheduled submission for clinics.",
+  "service_type":"Dialysis Water Quality Testing",
+  "layout":["overview","standards","tests","process","faq","custom","related","cta"],
+  "overview_h2":"Compliance your surveyors will trust",
+  "lead":"Dialysis water and dialysate carry strict limits because the consequences of contamination reach the patient directly. IAS runs the full AAMI panel and makes recurring submission painless.",
+  "paragraphs":["We test for the AAMI list of chemical contaminants, perform heterotrophic plate counts, and quantify bacterial endotoxin — the three pillars surveyors look for in a dialysis water program.",
+                "Set up a recurring schedule and we handle the logistics, supply the sampling materials, and return clearly formatted reports on time, every cycle."],
+  "solutions":["Full AAMI chemical contaminant panel by ICP-MS",
+               "Heterotrophic plate counts (microbial) on water &amp; dialysate",
+               "Bacterial endotoxin (LAL) testing",
+               "Scheduled, recurring submission with materials supplied",
+               "Clear, audit-ready reporting each cycle"],
+  "media":("AAMI","Chemical · microbial · endotoxin panel"),
+  "std_h2":"Run to the dialysis water standards","std_eyebrow":"Standards",
+  "std_p":"Our panels follow the recognized ANSI/AAMI framework for water and dialysate used in hemodialysis.",
+  "standards":["ANSI/AAMI 13959","ANSI/AAMI 11663","ANSI/AAMI ST72 Endotoxin","AAMI Chemical Contaminants","Heterotrophic Plate Count","ICP-MS Trace Metals"],
+  "t_h2":"Dialysis testing &amp; pricing","t_p":"Most clinics run these on a fixed schedule — ask about program pricing for recurring submissions.",
+  "tests":[("AAMI chemical contaminant panel","ICP-MS","$210"),
+           ("Heterotrophic plate count","Membrane filtration","$55"),
+           ("Bacterial endotoxin (LAL)","Kinetic / gel-clot","$120"),
+           ("Full dialysis water program (per cycle)","Chemical + microbial + endotoxin","Call to quote")],
+  "p_h2":"How a dialysis program runs","p_p":"We supply the bottles and sampling instructions, and your results return on a predictable cycle.",
+  "faqs":[("Which standards do your dialysis water panels follow?","Our chemical, microbial and endotoxin testing follows the recognized ANSI/AAMI framework for water and dialysate used in hemodialysis, including the AAMI chemical contaminant list."),
+          ("Can you set up recurring monthly testing?","Yes. Most dialysis clients run on a fixed schedule. We open a simple account, supply sampling materials, and return reports each cycle so your program stays audit-ready."),
+          ("Do you test dialysate as well as the product water?","We test both the treated water and dialysate for the relevant chemical, microbial and endotoxin parameters."),
+          ("Do you supply the bottles and sampling materials?","Yes — sampling containers and instructions are provided at no extra charge with your program.")],
+  "custom_h2":"Beyond the standard panel",
+  "custom_line":"Investigating a water-system excursion, validating a new RO loop, or chasing an unexpected microbial result? We will design custom dialysis water and healthcare-facility testing around your situation — just call.",
+  "related":["pharmaceutical-testing.html","clinical-research-testing.html","water-testing.html"],
+  "cta_title":"Keep your water program audit-ready","cta_text":"Set up scheduled dialysis water testing and let us handle the logistics, materials and reporting."},
+
+ # ---------------------------------------------------------------- 4. Hospitals & Clinical Research
+ {"slug":"clinical-research-testing.html","card_name":"Hospitals &amp; Clinical Research","accent":"violet",
+  "name_short":"researchers","eyebrow":"Clinical &amp; Research Testing",
+  "h1":"Clinical research analytical testing — blood, serum &amp; tissue",
+  "hero_p":"Metals, toxicology and organic analysis on blood, serum and tissue for research — with chain-of-custody documentation and direct access to the chemists doing the work.",
+  "title":"Clinical Research Lab Testing — Blood, Serum &amp; Tissue Analysis | IAS",
+  "meta_desc":"Clinical and research analytical testing from IAS: trace metals, toxicology and organic analysis on blood, serum and tissue for research, with chain-of-custody documentation and expert consultation.",
+  "service_type":"Clinical Research Analytical Testing",
+  "layout":["overview","matrices","tests","instruments","faq","custom","related","cta"],
+  "overview_h2":"An analytical partner for research teams",
+  "lead":"Hospital research groups, academic labs and clinical investigators rely on IAS for the quantitative chemistry behind their studies — trace metals, toxicology and organic analysis on demanding biological matrices.",
+  "paragraphs":["We measure what is in a sample down to trace levels, document the chain of custody when your protocol requires it, and talk through results with the researchers who need to interpret them.",
+                "Pilot-phase studies can start with a single sample and no account; ongoing studies get a streamlined submission workflow."],
+  "solutions":["Trace metals in blood, serum &amp; tissue by ICP-MS",
+               "Toxicology &amp; contaminant screening",
+               "Organic compound analysis by GC-MS",
+               "Chain-of-custody documentation on request",
+               "Direct consultation on study design &amp; interpretation"],
+  "media":("ppt","Trace-level metals in biological matrices"),
+  "m_h2":"Biological matrices we analyze","m_eyebrow":"Sample types",
+  "matrices":[(_I["blood"],"Blood &amp; serum","Trace metals, toxic elements and organic analytes at research-grade sensitivity."),
+              (_I["vial"],"Tissue","Digestion and elemental or organic analysis of tissue specimens."),
+              (_I["drop"],"Other fluids","Urine, dialysate and study-specific matrices by arrangement.")],
+  "t_h2":"Representative research tests","t_p":"",
+  "tests":[("Trace metals in blood / serum","ICP-MS","$190"),
+           ("Heavy metal / toxic element panel","ICP-MS","$210"),
+           ("Organic compound screen","GC-MS","$185"),
+           ("Tissue elemental analysis","Digestion + ICP-MS","Call to quote")],
+  "i_h2":"Instruments for research-grade answers",
+  "instruments":[("ICP-MS","parts-per-trillion metals in blood, serum and digested tissue"),
+                 ("GC-MS","identification and quantitation of organic analytes and contaminants"),
+                 ("FTIR","compound and material identification in research samples")],
+  "faqs":[("Do you provide chain-of-custody documentation?","Yes. When your protocol or eventual publication requires it, we maintain documented chain-of-custody from receipt through reporting."),
+          ("Can you analyze trace metals in blood, serum or tissue?","Yes — ICP-MS gives parts-per-trillion sensitivity for metals and toxic elements across blood, serum, tissue and other biological matrices."),
+          ("Can I start with a single pilot sample?","Absolutely. Pilot-phase work can begin with one sample and no account, which is ideal before committing to a full study."),
+          ("Will a chemist help me interpret the data?","Yes. Most consultations are included — you can talk through method choice and results directly with the analyst.")],
+  "custom_h2":"Every study is a little different",
+  "custom_line":"Unusual matrix, a bespoke analyte list, or a method that has to be built around your protocol? Research is where flexible, custom analytical work is the norm for us — bring us the question.",
+  "related":["veterinary-toxicology-testing.html","pharmaceutical-testing.html","rd-analytical-testing.html"],
+  "cta_title":"Put real chemistry behind your study","cta_text":"Talk through your matrix and analyte list with a chemist before you submit your first sample."},
+
+ # ---------------------------------------------------------------- 5. Veterinary & Animal Health
+ {"slug":"veterinary-toxicology-testing.html","card_name":"Veterinary &amp; Animal Health","accent":"green",
+  "name_short":"vets","eyebrow":"Veterinary Toxicology Testing",
+  "h1":"Veterinary toxicology &amp; animal health testing",
+  "hero_p":"Blood and tissue toxicology for animals — heavy metals, pesticides and contaminants — with practical turnaround and a chemist on the phone when results need context.",
+  "title":"Veterinary Toxicology Lab — Animal Blood &amp; Tissue Metals, Pesticides | IAS",
+  "meta_desc":"Veterinary toxicology testing from IAS: heavy metals, pesticides and contaminant analysis in animal blood and tissue, with fast turnaround and expert consultation for vets and animal-health researchers.",
+  "service_type":"Veterinary Toxicology Testing",
+  "layout":["challenges","overview","tests","matrices","faq","custom","related","cta"],
+  "ch_h2":"When an animal case turns analytical","ch_eyebrow":"Common cases",
+  "challenges":[(_I["shield"],"Suspected poisoning","Heavy-metal and pesticide screening when toxicity is on the differential."),
+                (_I["search"],"Unexplained illness","Contaminant and trace-element analysis to support a diagnosis."),
+                (_I["doc"],"Herd &amp; feed concerns","Testing across multiple animals or feed/water sources to find a common cause.")],
+  "overview_h2":"Toxicology answers for animal health",
+  "lead":"Veterinarians, diagnostic labs and animal-health researchers use IAS for the trace-element and contaminant chemistry that confirms — or rules out — a toxicological cause.",
+  "paragraphs":["We quantify heavy metals and screen for pesticides and contaminants in blood and tissue, and we talk results through with the clinician or researcher who has to act on them.",
+                "Single urgent cases and ongoing research programs are equally welcome, with no account required to send the first sample."],
+  "solutions":["Heavy-metal panels in animal blood &amp; tissue by ICP-MS",
+               "Pesticide &amp; contaminant screening by GC-MS",
+               "Trace-element analysis for nutritional or toxic status",
+               "Feed &amp; water source testing to find a common cause",
+               "Direct consultation with an experienced chemist"],
+  "media":("Tox","Metals · pesticides · contaminants"),
+  "t_h2":"Veterinary tests &amp; pricing","t_p":"",
+  "tests":[("Heavy-metal panel (blood / tissue)","ICP-MS","$190"),
+           ("Single toxic element (e.g. lead)","ICP-MS","$85"),
+           ("Pesticide / contaminant screen","GC-MS","$185"),
+           ("Feed or water source analysis","ICP-MS · GC-MS","Call to quote")],
+  "m_h2":"What we test for animal cases","m_eyebrow":"Matrices",
+  "matrices":[(_I["blood"],"Blood &amp; serum","Heavy metals and toxic elements at diagnostic sensitivity."),
+              (_I["paw"],"Tissue","Liver, kidney and other tissue for elemental and contaminant analysis."),
+              (_I["food"],"Feed &amp; water","Source testing when several animals are affected.")],
+  "faqs":[("Can you test animal blood and tissue for heavy metals?","Yes. ICP-MS quantifies lead, arsenic, mercury and a full heavy-metal panel in animal blood, serum and tissue at diagnostic sensitivity."),
+          ("Do you screen for pesticides in a suspected poisoning?","We do — GC-MS screening for pesticides and other contaminants supports suspected-toxicity cases."),
+          ("Can you help when a whole herd or kennel is affected?","Yes. We can test across multiple animals and the shared feed or water sources to help identify a common cause."),
+          ("How fast can urgent cases be handled?","Rush turnaround is available at additional cost — tell us the urgency when you call and we will prioritize accordingly.")],
+  "custom_h2":"Unusual species, unusual sample",
+  "custom_line":"Exotic species, an uncommon matrix, or an analyte that is not on a standard panel? Veterinary work is rarely cookie-cutter, and neither are we — call and we will build the right approach.",
+  "related":["clinical-research-testing.html","food-beverage-testing.html","environmental-testing.html"],
+  "cta_title":"Get a toxicology answer you can act on","cta_text":"Call the lab to scope an urgent case or set up ongoing animal-health research testing."},
+
+ # ---------------------------------------------------------------- 6. Industrial & Process
+ {"slug":"industrial-process-testing.html","card_name":"Industrial &amp; Process","accent":"steel",
+  "name_short":"process engineers","eyebrow":"Industrial &amp; Process Testing",
+  "h1":"Industrial &amp; process analytical testing",
+  "hero_p":"Process-stream monitoring, cooling-tower chemistry, raw-material QC and failure analysis — the chemistry that keeps a plant running and explains it when something goes wrong.",
+  "title":"Industrial Process Testing Lab — Cooling Tower, Raw Material QC, Failure Analysis | IAS",
+  "meta_desc":"Industrial and process analytical testing from IAS: process-stream monitoring, cooling-tower water chemistry, raw-material QC, and failure analysis by SEM/EDS, FTIR and ICP for manufacturers and plants.",
+  "service_type":"Industrial Process Analytical Testing",
+  "layout":["overview","challenges","instruments","tests","faq","custom","related","cta"],
+  "overview_h2":"Chemistry that keeps production running",
+  "lead":"Plants and manufacturers use IAS to monitor process streams, control utility water, qualify incoming materials, and run the failure analysis that turns an unplanned shutdown into a root cause.",
+  "paragraphs":["We watch the chemistry of the fluids and materials your process depends on, flag drift before it becomes downtime, and dig into components when they fail prematurely.",
+                "Whether it is a routine monitoring program or a single urgent failure, you reach a chemist directly — not a ticket queue."],
+  "solutions":["Process-stream &amp; utility water monitoring",
+               "Cooling-tower chemistry &amp; corrosion control",
+               "Raw-material and incoming-lot QC",
+               "Failure analysis by SEM/EDS, FTIR and ICP",
+               "Unknown deposit, scale &amp; residue identification"],
+  "media":("Root","cause from the chemistry up"),
+  "media_left":True,
+  "ch_h2":"Where process testing earns its keep","ch_eyebrow":"Typical work",
+  "challenges":[(_I["factory"],"Process drift","Trend the chemistry of a stream so you catch a problem before it scraps product."),
+                (_I["clock"],"Unplanned failure","SEM/EDS and material ID to find why a component or weld failed."),
+                (_I["wave"],"Utility water","Cooling-tower and boiler chemistry to control scale, corrosion and microbial growth.")],
+  "i_h2":"Instruments for plant problems",
+  "instruments":[("SEM/EDS","imaging and elemental analysis of failed parts, deposits and surface contamination"),
+                 ("ICP-OES","metals across process water, industrial fluids, alloys and wastewater"),
+                 ("FTIR","identifying unknown deposits, residues, films and incoming materials")],
+  "t_h2":"Representative industrial tests","t_p":"",
+  "tests":[("Failure analysis (SEM/EDS)","SEM/EDS","$250"),
+           ("Metals in process water / fluid","ICP-OES","$160"),
+           ("Cooling-tower water panel","Multi-parameter","$140"),
+           ("Unknown deposit / scale ID","FTIR · SEM/EDS","$175"),
+           ("Raw-material conformance","Method-dependent","Call to quote")],
+  "faqs":[("Can you do failure analysis on a broken component?","Yes. SEM/EDS imaging plus elemental and material analysis is a core service — we determine why parts, welds, coatings and deposits fail."),
+          ("Do you run cooling-tower and boiler water chemistry?","We do, including the parameters needed to control scale, corrosion and microbiological growth in utility water systems."),
+          ("Can you identify an unknown deposit or residue in our process?","Yes. FTIR and SEM/EDS together identify scales, films, particulates and residues so you can trace the source."),
+          ("Do you support recurring process-monitoring programs?","Yes — scheduled monitoring with consistent reporting is common, and accounts are easy to open.")],
+  "custom_h2":"Every plant is one of a kind",
+  "custom_line":"A proprietary fluid, an unusual alloy, an intermittent defect no one can pin down — process problems are exactly where our custom, flexible analytical work shines. Send the sample and let us investigate.",
+  "related":["chemical-testing.html","environmental-testing.html","water-testing.html"],
+  "cta_title":"Turn a process problem into a root cause","cta_text":"Get a chemist on the phone to scope monitoring, raw-material QC, or an urgent failure analysis."},
+
+ # ---------------------------------------------------------------- 7. Chemical Production
+ {"slug":"chemical-testing.html","card_name":"Chemical Production","accent":"orange",
+  "name_short":"chemical producers","eyebrow":"Chemical Analysis &amp; Method Development",
+  "h1":"Chemical analysis, purity verification &amp; method development",
+  "hero_p":"Purity verification, solvent residuals, and molecular identification by NMR and FTIR — plus custom method development when an off-the-shelf test does not exist.",
+  "title":"Chemical Testing Lab — Purity, Molecular ID (NMR/FTIR) &amp; Method Development | IAS",
+  "meta_desc":"Chemical analysis from IAS: purity verification, residual solvent analysis, molecular identification by NMR and FTIR, and custom analytical method development for chemical producers and formulators.",
+  "service_type":"Chemical Analysis &amp; Method Development",
+  "layout":["overview","instruments","tests","matrices","faq","custom","related","cta"],
+  "overview_h2":"Know exactly what is in the bottle",
+  "lead":"Chemical producers and formulators rely on IAS to confirm identity, quantify purity, hunt down residual solvents, and develop methods for compounds that no standard test was written for.",
+  "paragraphs":["Our NMR and FTIR capability confirms molecular structure and fingerprints unknowns, while chromatography quantifies the impurities and residuals that matter to your spec.",
+                "When the analysis you need does not exist yet, our chemists develop and document it — and you can start with a single sample."],
+  "solutions":["Purity verification &amp; assay",
+               "Residual solvent analysis by GC-MS",
+               "Molecular structure &amp; identity by NMR",
+               "Functional-group &amp; unknown ID by FTIR",
+               "Custom method development &amp; documentation"],
+  "media":("NMR","Structure · purity · identity"),
+  "i_h2":"Instruments for molecular certainty",
+  "instruments":[("NMR","definitive structure elucidation, identity confirmation and purity by integration"),
+                 ("FTIR","functional-group fingerprinting and rapid identification of unknown chemicals"),
+                 ("GC-MS","residual solvents, volatile impurities and contaminant identification")],
+  "t_h2":"Representative chemical tests","t_p":"",
+  "tests":[("Molecular identity / structure","NMR","$280"),
+           ("Functional-group ID","FTIR","$135"),
+           ("Residual solvents","GC-MS","$150"),
+           ("Purity / assay","Method-dependent","Call to quote"),
+           ("Custom method development","Scoped per project","Call to quote")],
+  "m_h2":"What we characterize","m_eyebrow":"Sample types",
+  "matrices":[(_I["flask"],"Raw &amp; intermediate chemicals","Identity, purity and impurity profiling of inputs and intermediates."),
+              (_I["drop"],"Solvents &amp; formulations","Residual solvents, composition and contaminant screening."),
+              (_I["search"],"Unknowns","Reverse-engineering and identification of unidentified substances.")],
+  "faqs":[("Can you confirm the structure of a compound?","Yes. NMR provides definitive structure elucidation and identity confirmation, complemented by FTIR for functional-group fingerprinting."),
+          ("Do you measure residual solvents?","Yes — GC-MS quantifies residual solvents and volatile impurities against your specification."),
+          ("Can you develop a method for a compound with no standard test?","That is a core strength. We develop, document and run custom analytical methods for novel and difficult compounds."),
+          ("Can you identify an unknown chemical?","Yes. Combining NMR, FTIR and GC-MS, we identify unknown substances and reverse-engineer composition.")],
+  "custom_h2":"When no standard method exists",
+  "custom_line":"A novel compound, a proprietary formulation, an impurity nobody has a method for — developing custom analytical methods is something we do every week. Send a sample and we will build the approach around it.",
+  "related":["pharmaceutical-testing.html","industrial-process-testing.html","rd-analytical-testing.html"],
+  "cta_title":"Confirm identity, purity and more","cta_text":"Talk to a chemist about your compound, your spec, or a method that needs to be built from scratch."},
+
+ # ---------------------------------------------------------------- 8. Food & Beverage
+ {"slug":"food-beverage-testing.html","card_name":"Food &amp; Beverage","accent":"amber",
+  "name_short":"food &amp; beverage","eyebrow":"Food &amp; Beverage Testing",
+  "h1":"Food &amp; beverage analytical testing",
+  "hero_p":"Microbiology, pesticide residues, heavy metals, mycotoxins and process-water quality — the safety and quality testing that protects your product and your brand.",
+  "title":"Food &amp; Beverage Testing Lab — Pesticides, Metals, Mycotoxins, Microbiology | IAS",
+  "meta_desc":"Food and beverage testing from IAS: microbiology, pesticide residue analysis, heavy metals, mycotoxins and process-water quality for producers, processors and beverage manufacturers.",
+  "service_type":"Food &amp; Beverage Analytical Testing",
+  "layout":["challenges","overview","tests","standards","faq","custom","related","cta"],
+  "ch_h2":"What food &amp; beverage makers test for","ch_eyebrow":"Core concerns",
+  "challenges":[(_I["bug"],"Microbial safety","Coliform, E. coli and spoilage organisms across product and environment."),
+                (_I["leaf"],"Residues &amp; toxins","Pesticide residues, mycotoxins and heavy metals that carry regulatory limits."),
+                (_I["wave"],"Process water","Water quality for ingredient, cleaning and process use.")],
+  "overview_h2":"Safety and quality your brand depends on",
+  "lead":"Food and beverage producers come to IAS for the contaminant, microbiological and water testing that keeps product safe, compliant and consistent — without a complicated onboarding.",
+  "paragraphs":["We screen for pesticide residues, mycotoxins and heavy metals, run the microbiology that flags contamination, and verify the water that touches your product.",
+                "Single-batch questions and recurring quality programs are equally welcome, and we supply the sampling materials you need."],
+  "solutions":["Microbiology — coliform, E. coli &amp; spoilage organisms",
+               "Pesticide residue screening by GC-MS",
+               "Heavy metals in product by ICP-MS",
+               "Mycotoxin analysis",
+               "Process- and ingredient-water quality"],
+  "media":("QA","Microbiology · residues · metals"),
+  "t_h2":"Food &amp; beverage tests &amp; pricing","t_p":"",
+  "tests":[("Total coliform &amp; E. coli","Presence / absence","$65"),
+           ("Heavy metals in product","ICP-MS","$190"),
+           ("Pesticide residue screen","GC-MS","$185"),
+           ("Mycotoxin analysis","LC / method-dependent","Call to quote"),
+           ("Process-water quality panel","Multi-parameter","$140")],
+  "std_h2":"Testing aligned to food safety","std_eyebrow":"Frameworks",
+  "std_p":"Our contaminant, microbiological and water testing supports the safety and quality programs food and beverage operations run on.",
+  "standards":["Heavy Metals (ICP-MS)","Pesticide Residues","Mycotoxins","Microbiology","Process Water","HACCP-supporting data"],
+  "faqs":[("Do you test for pesticide residues in food?","Yes. GC-MS screening covers a broad range of pesticide residues in food and beverage products."),
+          ("Can you check heavy metals like lead and arsenic in product?","Yes — ICP-MS quantifies lead, arsenic, cadmium, mercury and a full heavy-metal panel at trace levels."),
+          ("Do you run microbiology for coliform and E. coli?","We do, along with spoilage organisms and environmental monitoring to support your sanitation program."),
+          ("Can you test our process and ingredient water?","Yes. We run full water-quality panels on process, ingredient and cleaning water.")],
+  "custom_h2":"New product, new question",
+  "custom_line":"A novel ingredient, a shelf-life question, an unexpected off-flavor or contaminant — food and beverage problems are often one-of-a-kind, and we will scope custom testing to match. No account needed to start.",
+  "related":["water-testing.html","veterinary-toxicology-testing.html","chemical-testing.html"],
+  "cta_title":"Protect your product and your brand","cta_text":"Talk to a chemist about the safety, contaminant or water testing your product needs."},
+
+ # ---------------------------------------------------------------- 9. Water & Municipal Utilities
+ {"slug":"water-testing.html","card_name":"Water &amp; Municipal Utilities","accent":"ocean",
+  "name_short":"water utilities","eyebrow":"Water &amp; Wastewater Testing",
+  "h1":"Water testing — drinking, process &amp; wastewater",
+  "hero_p":"Full inorganic, organic and microbiological panels for treated, process and waste water — the complete analytical picture utilities and facilities need to stay compliant.",
+  "title":"Water Testing Lab — Drinking Water, Wastewater, Metals &amp; Coliform | IAS",
+  "meta_desc":"Water testing from IAS: inorganic, organic and microbiological panels for drinking, process and waste water — heavy metals, coliform and E. coli, VOCs and full multi-analyte scans for utilities and facilities.",
+  "service_type":"Water &amp; Wastewater Testing",
+  "layout":["overview","tests","matrices","standards","faq","custom","related","cta"],
+  "overview_h2":"One lab for the whole water picture",
+  "lead":"Municipal utilities, facilities and property managers use IAS for the inorganic, organic and microbiological testing that keeps treated, process and waste water inside its limits.",
+  "paragraphs":["We run heavy metals, the microbiology surveyors look for, volatile and semi-volatile organics, and the broad multi-analyte scans that catch the unexpected.",
+                "Routine compliance programs and one-off investigations are both straightforward, with sampling materials supplied."],
+  "solutions":["Heavy metals &amp; inorganics by ICP-MS / ICP-OES",
+               "Coliform, E. coli &amp; microbiological panels",
+               "Volatile &amp; semi-volatile organics by GC-MS",
+               "Full multi-analyte drinking-water scans",
+               "Process &amp; waste water characterization"],
+  "media":("H2O","Inorganic · organic · microbial"),
+  "t_h2":"Water tests &amp; pricing","t_p":"",
+  "tests":[("Total coliform &amp; E. coli","Presence / absence","$65"),
+           ("Heavy metals panel","ICP-MS","$190"),
+           ("VOCs scan","GC-MS (59 compounds)","$150"),
+           ("Drinking-water multi-analyte scan","Inorganic + organic + microbial","Call to quote"),
+           ("Wastewater characterization","Method-dependent","Call to quote")],
+  "m_h2":"Waters we test","m_eyebrow":"Sample types",
+  "matrices":[(_I["wave"],"Drinking &amp; treated water","Compliance panels for potable and treated supplies."),
+              (_I["factory"],"Process water","Cooling, boiler and process streams for industrial users."),
+              (_I["drop"],"Waste water","Characterization for discharge, treatment and permitting.")],
+  "std_h2":"Compliance-grade water data","std_eyebrow":"Methods",
+  "std_p":"Our inorganic, organic and microbiological water testing follows recognized analytical methods suited to compliance reporting.",
+  "standards":["EPA-style Metals","Coliform / E. coli","VOCs (GC-MS)","SVOCs","Inorganic Anions","Multi-analyte Scans"],
+  "faqs":[("Do you test drinking water for coliform and E. coli?","Yes. We run presence/absence and quantitative microbiological panels for coliform, E. coli and related organisms."),
+          ("Can you run a full heavy-metals panel on water?","Yes — ICP-MS and ICP-OES cover trace heavy metals and a broad inorganic panel in any water matrix."),
+          ("Do you handle wastewater characterization?","We do, including the organic, inorganic and physical parameters needed for discharge and permitting questions."),
+          ("Can you supply the sample bottles?","Yes — bottles and sampling instructions are provided at no extra charge.")],
+  "custom_h2":"An unusual water question",
+  "custom_line":"A contaminant nobody can identify, a one-off source investigation, a parameter outside the standard panels — we build custom water and wastewater testing around the question. Just call.",
+  "related":["environmental-testing.html","dialysis-water-testing.html","facilities-testing.html"],
+  "cta_title":"Keep your water inside its limits","cta_text":"Set up compliance water testing or send a one-off sample for investigation — materials included."},
+
+ # ---------------------------------------------------------------- 10. Environmental & Remediation
+ {"slug":"environmental-testing.html","card_name":"Environmental &amp; Remediation","accent":"forest",
+  "name_short":"environmental work","eyebrow":"Environmental &amp; Remediation Testing",
+  "h1":"Environmental testing — soil, water, PFAS &amp; remediation",
+  "hero_p":"Soil and water for metals, VOCs, SVOCs, pesticides, PCBs and PFAS — with litigation-quality documentation and chain-of-custody when the result has to hold up.",
+  "title":"Environmental Testing Lab — PFAS, VOCs, Metals, Soil &amp; Water | IAS",
+  "meta_desc":"Environmental testing from IAS: soil and water analysis for metals, VOCs, SVOCs, pesticides, PCBs and PFAS, with chain-of-custody and litigation-quality documentation for remediation and site work.",
+  "service_type":"Environmental Analytical Testing",
+  "layout":["overview","tests","standards","instruments","faq","custom","related","cta"],
+  "overview_h2":"Defensible data for site &amp; remediation work",
+  "lead":"Consultants, remediation contractors and property owners use IAS for the soil and water analysis that drives site decisions — including PFAS — backed by documentation that stands up to scrutiny.",
+  "paragraphs":["We quantify metals, volatile and semi-volatile organics, pesticides, PCBs and PFAS across soil and water, and document the chain of custody for litigation-quality results.",
+                "Spot investigations and multi-round remediation monitoring are both routine, and a chemist is available to help you scope the program."],
+  "solutions":["PFAS analysis in water &amp; soil",
+               "Priority-pollutant metals by ICP-MS",
+               "VOCs &amp; SVOCs by GC-MS",
+               "Pesticides &amp; PCBs",
+               "Chain-of-custody &amp; litigation-quality documentation"],
+  "media":("PFAS","plus metals, VOCs, SVOCs &amp; PCBs"),
+  "media_left":True,
+  "t_h2":"Environmental tests &amp; pricing","t_p":"",
+  "tests":[("PFAS — 18 compounds","LC-MS/MS","$415"),
+           ("Priority-pollutant metals","ICP-MS","$190"),
+           ("VOCs scan","GC-MS","$150"),
+           ("SVOCs scan","GC-MS","$185"),
+           ("Pesticides / PCBs","GC-MS","Call to quote")],
+  "std_h2":"Built to stand up to scrutiny","std_eyebrow":"How we document",
+  "std_p":"Chain-of-custody, recognized analytical methods and litigation-quality reporting come standard when the result may be challenged.",
+  "standards":["PFAS (LC-MS/MS)","EPA-style Metals","VOCs / SVOCs","Pesticides &amp; PCBs","Chain-of-Custody","Litigation-Quality Reports"],
+  "i_h2":"Instruments for environmental matrices",
+  "instruments":[("ICP-MS","trace and priority-pollutant metals in soil, water and leachate"),
+                 ("GC-MS","VOCs, SVOCs, pesticides and PCBs across environmental samples"),
+                 ("ICP-OES","higher-concentration metals in wastewater and industrial discharge")],
+  "faqs":[("Do you test for PFAS in soil and water?","Yes. We analyze PFAS compounds in water and soil matrices to support site investigation, remediation and compliance work."),
+          ("Can you provide litigation-quality documentation?","Yes — chain-of-custody and documentation suited to litigation and regulatory challenge are standard for environmental work."),
+          ("Do you run VOCs, SVOCs, pesticides and PCBs?","We do, by GC-MS, across soil and water for site characterization and remediation monitoring."),
+          ("Can you support multi-round remediation monitoring?","Yes. Recurring sampling rounds with consistent methods and reporting are routine.")],
+  "custom_h2":"Complex sites, complex matrices",
+  "custom_line":"An unusual matrix, an emerging contaminant, a litigation question that needs a tailored analytical plan — environmental work is where flexible, custom testing matters most, and it is exactly what we do.",
+  "related":["water-testing.html","industrial-process-testing.html","facilities-testing.html"],
+  "cta_title":"Get data your site decisions can rest on","cta_text":"Talk to a chemist about PFAS, metals, organics or a full remediation monitoring program."},
+
+ # ---------------------------------------------------------------- 11. Research & Development
+ {"slug":"rd-analytical-testing.html","card_name":"Research &amp; Development","accent":"indigo",
+  "name_short":"R&amp;D teams","eyebrow":"R&amp;D Analytical Support",
+  "h1":"R&amp;D analytical testing &amp; custom method development",
+  "hero_p":"Flexible analytical support for any matrix — custom methods, fast iteration, and no standing account for pilot-phase work. Bring us the question no catalog answers.",
+  "title":"R&amp;D Analytical Testing — Custom Methods, Any Matrix, No Account | IAS",
+  "meta_desc":"R&amp;D analytical testing from IAS: flexible custom method development across any matrix, fast iteration and expert consultation — no standing account required for pilot-phase and exploratory work.",
+  "service_type":"R&amp;D Analytical Support",
+  "layout":["overview","challenges","instruments","process","faq","custom","related","cta"],
+  "overview_h2":"A lab built for the unscripted question",
+  "lead":"Research and development rarely fits a catalog. IAS gives R&amp;D teams flexible analytical support across any matrix — with the instrumentation to answer hard questions and the freedom to start with a single sample.",
+  "paragraphs":["We develop methods around your problem, run them fast enough to keep your iteration loop tight, and put an experienced chemist on the phone to help interpret what comes back.",
+                "Pilot-phase work needs no standing account, and as a program matures we make recurring submission simple."],
+  "solutions":["Custom method development for novel problems",
+               "Analytical support across any matrix",
+               "Trace metals, organics, structure &amp; surface analysis",
+               "Competitive &amp; comparative product analysis",
+               "No standing account required for pilot work"],
+  "media":("R&amp;D","Any matrix · custom methods"),
+  "ch_h2":"How R&amp;D teams use us","ch_eyebrow":"Typical engagements",
+  "challenges":[(_I["search"],"Exploratory analysis","Figure out what is in a sample, or whether a hypothesis holds, before you scale."),
+                (_I["flask"],"Method development","Build and document a method for something no standard test covers."),
+                (_I["clip"],"Comparative work","Benchmark a formulation or component against a competitor or a target.")],
+  "i_h2":"The full instrument base, at your disposal",
+  "instruments":[("ICP-MS","parts-per-trillion elemental analysis across any developmental matrix"),
+                 ("NMR","structure elucidation and identity for novel compounds and intermediates"),
+                 ("SEM/EDS","surface, particle and elemental imaging for materials development")],
+  "p_h2":"How an R&amp;D engagement works","p_p":"Start with one sample and a conversation — no account, no commitment.",
+  "faqs":[("Can you develop a method for something with no standard test?","Yes — custom method development is central to our R&amp;D support. We build, document and run methods around novel problems and matrices."),
+          ("Do I need an account for exploratory work?","No. Pilot-phase and exploratory work can start with a single sample and no standing account."),
+          ("Can you analyze unusual or developmental matrices?","Yes. Our instrument base spans trace metals, organics, molecular structure and surface analysis, so most matrices are in scope."),
+          ("Can you do competitive or comparative product analysis?","We do — reverse-engineering and benchmarking a product or formulation against a target or competitor.")],
+  "custom_h2":"Custom is the whole point",
+  "custom_line":"R&amp;D is where flexible, made-to-fit analytical work lives. Whatever the matrix and whatever the question, we will design the method, run it fast, and iterate with you — starting from a single sample.",
+  "related":["chemical-testing.html","pharmaceutical-testing.html","clinical-research-testing.html"],
+  "cta_title":"Bring us the question no catalog answers","cta_text":"Get a chemist on the phone to scope a custom method or an exploratory analysis — no account needed."},
+
+ # ---------------------------------------------------------------- 12. Property & Facilities
+ {"slug":"facilities-testing.html","card_name":"Property &amp; Facilities","accent":"crimson",
+  "name_short":"facilities","eyebrow":"Property &amp; Facilities Testing",
+  "h1":"Property &amp; facilities testing — air, water &amp; materials",
+  "hero_p":"Indoor air, water and material testing — asbestos, lead in paint, mold and VOCs — with the quick turnaround property managers and facilities teams need to act.",
+  "title":"Facilities Testing Lab — Asbestos, Lead Paint, Mold &amp; Indoor Air (VOCs) | IAS",
+  "meta_desc":"Property and facilities testing from IAS: indoor air quality and VOCs, asbestos identification, lead in paint, mold and material testing with quick turnaround for property managers and facilities teams.",
+  "service_type":"Property &amp; Facilities Testing",
+  "layout":["challenges","overview","tests","matrices","faq","custom","related","cta"],
+  "ch_h2":"What facilities teams need answered","ch_eyebrow":"Common requests",
+  "challenges":[(_I["build"],"Building materials","Asbestos identification and lead-in-paint testing for renovation and due diligence."),
+                (_I["bug"],"Air &amp; mold","Indoor air quality, VOCs and mold assessment when occupants raise concerns."),
+                (_I["wave"],"Building water","Potable and system water testing for safety and compliance.")],
+  "overview_h2":"Answers a building can act on, fast",
+  "lead":"Property managers, facilities teams and building owners use IAS for the air, water and material testing that resolves a complaint, clears a renovation, or supports due diligence — with turnaround that respects a deadline.",
+  "paragraphs":["We identify asbestos and lead in building materials, assess indoor air and VOCs, screen for mold, and test building water — then report it clearly enough to act on.",
+                "One-off requests are welcome and materials are supplied, so a single concern does not require setting up an account."],
+  "solutions":["Asbestos identification in building materials",
+               "Lead in paint, dust &amp; water",
+               "Indoor air quality &amp; VOC screening",
+               "Mold assessment",
+               "Potable &amp; building-water testing"],
+  "media":("IAQ","Asbestos · lead · mold · VOCs"),
+  "t_h2":"Facilities tests &amp; pricing","t_p":"",
+  "tests":[("Asbestos identification","PLM / microscopy","$45"),
+           ("Lead in paint","ICP / method-dependent","$55"),
+           ("Indoor air VOCs","GC-MS","$150"),
+           ("Mold assessment","Microscopy / culture","Call to quote"),
+           ("Building water panel","Multi-parameter","$140")],
+  "m_h2":"What we test in a building","m_eyebrow":"Sample types",
+  "matrices":[(_I["build"],"Building materials","Suspect asbestos materials, paint chips and surface dust."),
+              (_I["drop"],"Air &amp; water","Indoor air samples, VOC canisters and potable water."),
+              (_I["bug"],"Mold &amp; surfaces","Tape lifts, swabs and air samples for mold assessment.")],
+  "faqs":[("Do you identify asbestos in building materials?","Yes. We identify asbestos in suspect building materials by microscopy with quick turnaround for renovation and due-diligence needs."),
+          ("Can you test for lead in paint and dust?","Yes — lead testing in paint, dust and water to support renovation, abatement and compliance."),
+          ("Do you assess indoor air quality and VOCs?","We do. GC-MS-based VOC screening and indoor air quality assessment help resolve occupant complaints."),
+          ("Can I send a single sample without an account?","Yes. One-off facilities samples are welcome and sampling materials are supplied at no extra charge.")],
+  "custom_h2":"An unusual building problem",
+  "custom_line":"An odor no one can place, an unexplained residue, a material that needs identifying before demolition — facilities problems are often unique, and we will build the right testing around yours. Just call.",
+  "related":["environmental-testing.html","water-testing.html","industrial-process-testing.html"],
+  "cta_title":"Resolve the concern and move on","cta_text":"Talk to a chemist about asbestos, lead, mold, air or water testing — quick turnaround, materials included."},
+]
+
+for _d in INDUSTRY_PAGES:
+    build_industry(_d)
+
+# ============================================================ SITEMAP
+STATIC_PAGES = ["index.html","about.html","services.html","qa-programs.html","custom-testing.html",
+                "instrumentation.html","industries.html","pricing.html","get-started.html","contact.html"]
+def build_sitemap():
+    urls = STATIC_PAGES + [d["slug"] for d in INDUSTRY_PAGES]
+    items = []
+    for u in urls:
+        loc = BASE_URL if u == "index.html" else BASE_URL + u
+        pri = "1.0" if u == "index.html" else ("0.8" if u in STATIC_PAGES else "0.7")
+        items.append("  <url><loc>%s</loc><priority>%s</priority></url>" % (loc, pri))
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+           + "\n".join(items) + "\n</urlset>\n")
+    with open(os.path.join(OUT, "sitemap.xml"), "w") as f:
+        f.write(xml)
+    print("wrote sitemap.xml", len(urls), "urls")
+build_sitemap()
 
 print("\\nAll pages generated.")
 

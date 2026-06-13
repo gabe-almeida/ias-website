@@ -7,8 +7,18 @@
   var burger=document.getElementById('burger'),links=document.getElementById('navLinks');
   if(burger&&links){
     burger.addEventListener('click',function(){links.classList.toggle('open')});
-    links.addEventListener('click',function(e){if(e.target.tagName==='A')links.classList.remove('open')});
+    links.addEventListener('click',function(e){if(e.target.closest('a')){links.classList.remove('open');
+      var it=links.querySelector('.nav-item.open');if(it)it.classList.remove('open');}});
   }
+  // industries mega dropdown: accordion on mobile, fallback toggle on touch
+  document.querySelectorAll('.mega-toggle').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      var item=btn.closest('.nav-item');if(!item)return;
+      var open=item.classList.toggle('open');
+      btn.setAttribute('aria-expanded',open?'true':'false');
+    });
+  });
   // reveal on scroll
   var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}})},{threshold:.12});
   document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
