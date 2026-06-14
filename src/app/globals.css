@@ -414,6 +414,8 @@ footer{background:var(--navy);color:#fff;padding:70px 0 30px}
 .foot-col a:hover{color:#fff;padding-left:4px}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;flex-wrap:wrap;gap:14px}
 .foot-bottom p{color:#7E93B8;font-family:var(--font-inter);font-size:.85rem}
+.foot-bottom p a.foot-credit{color:#AFC2E0;font-weight:600;text-decoration:none;transition:color .2s}
+.foot-bottom p a.foot-credit:hover{color:#fff}
 .foot-social{display:flex;gap:10px}
 .foot-social a{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.07);display:grid;place-items:center;color:#C7D4E8;transition:.2s}
 .foot-social a:hover{background:var(--blue);color:#fff}
@@ -474,7 +476,8 @@ footer{background:var(--navy);color:#fff;padding:70px 0 30px}
   .table-scroll{overflow-x:hidden}
   table.cat{table-layout:fixed;width:100%}
   table.cat th,table.cat td{padding:12px 8px;overflow-wrap:break-word}
-  table.cat th:first-child,table.cat td:first-child{padding-left:16px;width:48%}
-  table.cat thead th:nth-child(2),table.cat tbody td:nth-child(2){width:28%;font-size:.74rem}
-  table.cat td.price,table.cat thead th.r{width:24%;padding-right:14px;padding-left:4px;font-size:.92rem}
+  table.cat thead th{letter-spacing:.02em;font-size:.66rem}
+  table.cat th:first-child,table.cat td:first-child{padding-left:16px;width:44%}
+  table.cat thead th:nth-child(2),table.cat tbody td:nth-child(2){width:32%;font-size:.74rem}
+  table.cat td.price,table.cat thead th.r{width:24%;padding-right:14px;padding-left:4px;font-size:.9rem;white-space:normal;overflow-wrap:break-word}
 }

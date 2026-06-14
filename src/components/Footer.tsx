@@ -59,7 +59,10 @@ export default function Footer() {
         <div className="foot-bottom">
           <p>
             © 2026 Industrial Analytical Services · iasamerica.com · 60 Elm Hill Ave.,
-            Leominster, MA 01453
+            Leominster, MA 01453 · Designed by{" "}
+            <a href="https://zokago.com" target="_blank" rel="noopener" className="foot-credit">
+              Zokago.com
+            </a>
           </p>
           <div className="foot-social">
             <a href="#" aria-label="LinkedIn">
