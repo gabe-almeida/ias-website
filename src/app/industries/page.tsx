@@ -13,7 +13,7 @@ export default function IndustriesHub() {
     <>
       <PageHero
         crumb="Industries We Serve"
-        title="Built for regulated, demanding industries."
+        title="Built for Regulated, Demanding Industries."
         text="From pharmaceutical release testing to environmental remediation, IAS has the instrumentation and the documentation standards to be your single analytical partner."
       />
       <section className="section">
@@ -22,7 +22,7 @@ export default function IndustriesHub() {
         </div>
       </section>
       <CtaBand
-        title="Don't see your industry?"
+        title="Don't See Your Industry?"
         text="If you have a sample and a question, we can almost certainly help — let's talk."
         primary={{ label: "Request a consultation", href: "/contact" }}
         secondary={{ label: "View pricing", href: "/pricing" }}

@@ -34,7 +34,7 @@ export default function PricingCatalog() {
             type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search 100+ tests — e.g. lead, PFAS, endotoxin, SEM…"
+            placeholder="Search 1,000+ tests — e.g. lead, PFAS, endotoxin, SEM…"
           />
         </div>
         <div className="filters">

@@ -123,7 +123,20 @@ function Tests({ d }: { d: IndustryPage }) {
                     <tr key={i}>
                       <td>{t.name}</td>
                       <td>{t.method}</td>
-                      <td className={`price${call ? " call" : ""}`}>{t.price}</td>
+                      <td className={`price${call ? " call" : ""}`}>
+                        {t.priceHref ? (
+                          <a
+                            href={t.priceHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "var(--blue)", fontWeight: 700 }}
+                          >
+                            {t.price} ↗
+                          </a>
+                        ) : (
+                          t.price
+                        )}
+                      </td>
                     </tr>
                   );
                 })}
@@ -136,6 +149,19 @@ function Tests({ d }: { d: IndustryPage }) {
               available
             </span>
             <span>
+              {d.priceListHref && (
+                <>
+                  <a
+                    href={d.priceListHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "var(--blue)", fontWeight: 700 }}
+                  >
+                    View Price List ↗
+                  </a>{" "}
+                  ·{" "}
+                </>
+              )}
               Need a test not listed here?{" "}
               <Link href="/contact" style={{ color: "var(--blue)", fontWeight: 700 }}>
                 Ask the lab →
@@ -207,7 +233,7 @@ function Matrices({ d }: { d: IndustryPage }) {
     <section className="section">
       <div className="wrap">
         <SectionHead eyebrow={d.mEyebrow ?? "What we test"} title={d.mH2} text={d.mP} />
-        <div className="vrow">
+        <div className={`vrow${d.centerMatrices ? " vrow-center" : ""}`}>
           {d.matrices?.map((m, i) => (
             <div key={i} className="vitem reveal">
               <div className="ico">
@@ -218,6 +244,39 @@ function Matrices({ d }: { d: IndustryPage }) {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function Packages({ d }: { d: IndustryPage }) {
+  return (
+    <section className="section">
+      <div className="wrap">
+        <SectionHead eyebrow={d.pkgEyebrow ?? "Packages"} title={d.pkgH2 ?? "Analysis Packages"} text={d.pkgP} />
+        <div className="pkg-grid">
+          {d.packages?.map((p, i) => (
+            <div key={i} className="pkg-card reveal">
+              <div className="pkg-top">
+                <div className="pkg-name">{p.name}</div>
+                <div className="pkg-price">{p.price}</div>
+              </div>
+              <p>{p.desc}</p>
+            </div>
+          ))}
+        </div>
+        {d.priceListHref && (
+          <div className="center" style={{ marginTop: 22 }}>
+            <a
+              href={d.priceListHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-ghost"
+            >
+              View Full Price List (PDF) <Arrow />
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -289,7 +348,7 @@ function Related({ d }: { d: IndustryPage }) {
   return (
     <section className="section">
       <div className="wrap">
-        <SectionHead eyebrow="Related industries" title={d.rH2 ?? "Explore related testing programs"} />
+        <SectionHead eyebrow="Related Industries" title={d.rH2 ?? "Explore related testing programs"} />
         <div className="rel-grid">
           {d.related.map((slug) => {
             const ind = industryBySlug(slug);
@@ -317,6 +376,7 @@ const BLOCKS: Record<BlockKey, (p: { d: IndustryPage }) => React.ReactElement> =
   standards: Standards,
   instruments: Instruments,
   matrices: Matrices,
+  packages: Packages,
   process: Process,
   faq: Faq,
   custom: Custom,

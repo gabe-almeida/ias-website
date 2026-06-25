@@ -57,7 +57,7 @@ const ORG_JSONLD = {
   alternateName: "IAS",
   url: SITE.baseUrl + "/",
   description:
-    "Independent analytical laboratory for industrial, commercial and biomedical testing. ICP-MS, ICP-OES, GC-MS, NMR, FTIR and SEM/EDS. Flat catalog pricing, no account required to submit a sample.",
+    "ISO/IEC 17025 accredited independent analytical laboratory for industrial, commercial and biomedical testing. ICP-MS, ICP-OES, GC-MS, NMR, FTIR and SEM/EDS. Flat catalog pricing, no account required to submit a sample.",
   foundingDate: "2000",
   telephone: "+1-978-466-3422",
   email: SITE.email,
@@ -71,6 +71,11 @@ const ORG_JSONLD = {
   },
   areaServed: "US",
   priceRange: "$$",
+  hasCertification: SITE.accreditations.map((a) => ({
+    "@type": "Certification",
+    name: a.name,
+    certificationIdentifier: a.name,
+  })),
   knowsAbout: [
     "ICP-MS testing",
     "ASTM testing",
@@ -81,7 +86,6 @@ const ORG_JSONLD = {
     "failure analysis",
     "environmental testing",
   ],
-  sameAs: ["https://iasamerica.com/"],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

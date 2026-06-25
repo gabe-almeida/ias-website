@@ -30,6 +30,10 @@ const INDUSTRY_SLUGS = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    // Prefer AVIF (≈20–30% smaller than WebP), fall back to WebP.
+    formats: ["image/avif", "image/webp"],
+  },
   async redirects() {
     const staticRedirects = Object.entries(STATIC_MAP).map(([source, destination]) => ({
       source,

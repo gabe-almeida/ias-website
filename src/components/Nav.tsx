@@ -33,10 +33,12 @@ export default function Nav() {
   }, []);
 
   // close menus on route change
+  /* eslint-disable react-hooks/set-state-in-effect -- intentional: dismiss menus on navigation */
   useEffect(() => {
     setOpen(false);
     setMegaOpen(false);
   }, [pathname]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <header className={`nav${scrolled ? " scrolled" : ""}`} id="nav">

@@ -14,7 +14,7 @@ export default function QaPrograms() {
     <>
       <PageHero
         crumb="Quality Assurance Programs"
-        title="Scheduled QA testing that keeps you in compliance."
+        title="Scheduled QA Testing That Keeps You in Compliance."
         text="Routine, scheduled programs that keep your operations in compliance and your processes under control — set up around your facility's requirements and production cycles."
       >
         <Link href="/get-started" className="btn btn-primary">
@@ -28,7 +28,7 @@ export default function QaPrograms() {
       <section className="section">
         <div className="wrap split">
           <div className="prose reveal">
-            <h2>Ongoing testing, handled</h2>
+            <h2>Ongoing Testing, Handled</h2>
             <p className="lead">
               Many of our clients rely on IAS for ongoing, scheduled quality-assurance testing.
               We set up a program tailored to your compliance requirements, production cycles, or
@@ -42,7 +42,7 @@ export default function QaPrograms() {
           <div className="split-media media-soft reveal">
             <div className="badge-float">
               <div className="big"><span>ASTM</span></div>
-              <div className="cap">Type I · II · III &amp; additional method types</div>
+              <div className="cap">ASTM D1193 — Type I · II · III · IV &amp; more</div>
             </div>
           </div>
         </div>
@@ -50,20 +50,24 @@ export default function QaPrograms() {
 
       <section className="section bg-soft">
         <div className="wrap">
-          <SectionHead eyebrow="Common QA services" title="Programs we run routinely" />
+          <SectionHead eyebrow="Common QA Services" title="Programs We Run Routinely" />
           <div className="cards">
-            <div className="card reveal"><div className="ico ic-blue"><Svg paths='<path d="M3 6h18M3 12h18M3 18h12"/>' /></div><h3>ASTM standardized testing</h3><p>Type I, Type II, Type III and additional method types, run to specification.</p></div>
-            <div className="card reveal"><div className="ico ic-orange"><Svg paths='<circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/>' /></div><h3>Endotoxin (LAL) testing</h3><p>Bacterial endotoxin testing for pharmaceutical and medical-device clients.</p></div>
-            <div className="card reveal"><div className="ico ic-gold"><Svg paths='<circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/>' /></div><h3>Mycoplasma detection</h3><p>Screening to support biologics and cell-culture quality control.</p></div>
+            <div className="card reveal"><div className="ico ic-blue"><Svg paths='<path d="M3 6h18M3 12h18M3 18h12"/>' /></div><h3>ASTM Standardized Testing</h3><p>Type I, Type II, Type III and additional method types, run to specification.</p></div>
+            <div className="card reveal"><div className="ico ic-orange"><Svg paths='<circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/>' /></div><h3>Endotoxin (LAL) Testing</h3><p>Bacterial endotoxin testing for pharmaceutical and medical-device clients.</p></div>
+            <div className="card reveal"><div className="ico ic-gold"><Svg paths='<circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/>' /></div><h3>Mycoplasma Detection</h3><p>Screening to support biologics and cell-culture quality control.</p></div>
             <div className="card reveal"><div className="ico ic-navy"><Svg paths='<path d="M5 11a7 7 0 0 1 14 0v3l2 4H3l2-4z"/>' /></div><h3>Microbiology</h3><p>Environmental monitoring, water, process streams and surfaces.</p></div>
-            <div className="card reveal"><div className="ico ic-blue"><Svg paths='<path d="M12 2v4M5 8c3 2 11 2 14 0M4 12c4 2.5 12 2.5 16 0M12 18v4"/>' /></div><h3>Cooling tower &amp; dialysis water</h3><p>Cooling-tower chemistry and biology, plus full-panel dialysis water monitoring.</p></div>
-            <div className="card reveal"><div className="ico ic-orange"><Svg paths='<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>' /></div><h3>Raw material &amp; release QC</h3><p>Raw-material and in-process QC plus finished-product release testing.</p></div>
+            <div className="card reveal"><div className="ico ic-blue"><Svg paths='<path d="M12 2v4M5 8c3 2 11 2 14 0M4 12c4 2.5 12 2.5 16 0M12 18v4"/>' /></div><h3>Cooling Tower &amp; Dialysis Water</h3><p>Cooling-tower chemistry and biology, plus full-panel dialysis water monitoring.</p></div>
+            <div className="card reveal"><div className="ico ic-orange"><Svg paths='<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>' /></div><h3>Raw Material &amp; Release QC</h3><p>Raw-material and in-process QC plus finished-product release testing.</p></div>
+            <div className="card reveal"><div className="ico ic-gold"><Svg paths='<path d="M5 11a7 7 0 0 1 14 0v3l2 4H3l2-4z"/><path d="M9 18a3 3 0 0 0 6 0"/>' /></div><h3>Food &amp; Dairy Testing</h3><p>Microbiology, contaminants and quality testing for dairy and food producers.</p></div>
+            <div className="card reveal"><div className="ico ic-navy"><Svg paths='<path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7z"/><path d="M9 12l2 2 4-4"/>' /></div><h3>Filtration Efficacy Testing</h3><p>Programs that validate filter and membrane performance against your specifications.</p></div>
+            <div className="card reveal"><div className="ico ic-blue"><Svg paths='<circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/>' /></div><h3>Product Quality</h3><p>Finished-product quality testing to support release and shelf-life programs.</p></div>
+            <div className="card reveal"><div className="ico ic-orange"><Svg paths='<path d="M9 3h6v5l4 9a2 2 0 0 1-1.8 3H6.8A2 2 0 0 1 5 17l4-9z"/><path d="M8 14h8"/>' /></div><h3>Custom Method Development</h3><p>Customized testing — methods built around your analyte, matrix or specification.</p></div>
           </div>
         </div>
       </section>
 
       <CtaBand
-        title="Ready to set up a program?"
+        title="Ready to Set up a Program?"
         text="We'll tailor scheduled testing to your facility and handle the logistics end-to-end."
         primary={{ label: "Get started", href: "/get-started" }}
         secondary={{ label: "Talk to a chemist", href: "/contact" }}

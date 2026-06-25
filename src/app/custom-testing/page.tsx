@@ -14,7 +14,7 @@ export default function CustomTesting() {
     <>
       <PageHero
         crumb="Custom & One-Time Testing"
-        title="One sample, one question, no commitment."
+        title="One Sample, One Question, No Commitment."
         text="Not every testing need fits a standard program. Whether you have a single sample to investigate or a specific analyte to confirm, IAS handles it — and you can submit without setting up an account."
       >
         <Link href="/get-started" className="btn btn-primary">
@@ -34,7 +34,7 @@ export default function CustomTesting() {
             </div>
           </div>
           <div className="prose reveal">
-            <h2>Investigations, failures &amp; unknowns</h2>
+            <h2>Investigations, Failures &amp; Unknowns</h2>
             <p className="lead">
               Whether you're chasing a contaminant, confirming a compound, or figuring out why a
               component failed, we'll tell you exactly what to send and how to send it.
@@ -54,7 +54,7 @@ export default function CustomTesting() {
       </section>
 
       <CtaBand
-        title="Have something you need answered?"
+        title="Have Something You Need Answered?"
         text="Send a one-time sample with zero setup, or call and we'll help you scope it."
         primary={{ label: "Submit a sample", href: "/get-started" }}
       />

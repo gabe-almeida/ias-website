@@ -32,14 +32,15 @@ export default function Home() {
               <span className="dot"></span>Independent Analytical Laboratory · Est. 2000
             </span>
             <h1 style={{ marginTop: 20 }}>
-              Industrial-grade testing,
+              Industrial-Grade Testing,
               <br />
-              <span className="hl">without the runaround.</span>
+              <span className="hl">Without the Runaround.</span>
             </h1>
             <p className="lead">
-              From trace metals to failure analysis, IAS gives you sophisticated
-              instrumentation, flat catalog pricing, and a real chemist on the phone. No
-              portals, no mystery quotes — and no account required to send your first sample.
+              From trace metals to failure analysis, IAS combines advanced lab capabilities
+              with straightforward catalog pricing and real chemists to consult with. No
+              portals, no mystery quotes, no account required — just send your first sample
+              and get started.
             </p>
             <div className="hero-cta">
               <Link href="/contact" className="btn btn-primary">
@@ -132,18 +133,18 @@ export default function Home() {
 
       <section className="stats">
         <div className="wrap stats-grid">
-          <div className="stat"><div className="n"><span>24</span>+</div><div className="l">Years in operation</div></div>
-          <div className="stat"><div className="n">6+</div><div className="l">Instrument platforms</div></div>
-          <div className="stat"><div className="n">12</div><div className="l">Industries served</div></div>
-          <div className="stat"><div className="n">100+</div><div className="l">Standard tests, priced</div></div>
+          <div className="stat"><div className="n"><span>24</span>+</div><div className="l">Years in Operation</div></div>
+          <div className="stat"><div className="n">15+</div><div className="l">Instrument Platforms</div></div>
+          <div className="stat"><div className="n">20+</div><div className="l">Industries Served</div></div>
+          <div className="stat"><div className="n">1,000+</div><div className="l">Standard Tests, Priced</div></div>
         </div>
       </section>
 
       <section className="section">
         <div className="wrap">
           <SectionHead
-            eyebrow="What sets us apart"
-            title={<>A lab that works <span className="text-grad">the way you do</span></>}
+            eyebrow="What Sets Us Apart"
+            title={<>A Lab That Works <span className="text-grad">The Way You Do</span></>}
             text="Big-lab capability with small-lab access. Here's what you get when you work with IAS."
           />
           <WhyCards />
@@ -153,8 +154,8 @@ export default function Home() {
       <section className="section bg-soft">
         <div className="wrap">
           <SectionHead
-            eyebrow="How it works"
-            title="From sample to answer in three steps"
+            eyebrow="How It Works"
+            title="From Sample to Answer in Three Steps"
             text="No forms, no portals required — just a conversation with someone who knows the lab."
           />
           <Steps />
@@ -164,8 +165,8 @@ export default function Home() {
       <section className="section">
         <div className="wrap">
           <SectionHead
-            eyebrow="Testing services"
-            title="Ongoing programs or a single sample"
+            eyebrow="Testing Services"
+            title="Ongoing Programs or a Single Sample"
             text="However you need to work with a lab, we've built for it."
           />
           <ServicesSplit />
@@ -176,7 +177,7 @@ export default function Home() {
         <div className="wrap">
           <SectionHead
             eyebrow="Instrumentation"
-            title="The instruments behind the answers"
+            title="The Instruments Behind the Answers"
             text="Plain-language on what each platform does — and the questions it can answer for you."
           />
           <InstrumentsGrid />
@@ -191,8 +192,8 @@ export default function Home() {
       <section className="section">
         <div className="wrap">
           <SectionHead
-            eyebrow="Industries we serve"
-            title="Trusted across regulated & demanding fields"
+            eyebrow="Industries We Serve"
+            title="Trusted Across Regulated & Demanding Fields"
             text="From pharmaceutical release testing to environmental remediation — the breadth to be your single lab partner."
           />
           <IndustriesGrid />
@@ -202,8 +203,8 @@ export default function Home() {
       <section className="section bg-pricing">
         <div className="wrap">
           <SectionHead
-            eyebrow="Pricing & test catalog"
-            title="Lab pricing, about as simple as it gets"
+            eyebrow="Pricing & Test Catalog"
+            title="Lab Pricing, About as Simple as It Gets"
             text="Heavy metals on a liquid sample? $190. SEM analysis? $250. Standard tests have standard prices."
           />
           <PricePop />
@@ -216,7 +217,7 @@ export default function Home() {
       </section>
 
       <CtaBand
-        title="Not sure which test you need?"
+        title="Not Sure Which Test You Need?"
         text="Get on the phone with an experienced chemist who can scope it with you — most consultations are included at no charge."
       />
     </>

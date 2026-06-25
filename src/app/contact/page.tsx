@@ -16,7 +16,7 @@ export default function Contact() {
     <>
       <PageHero
         crumb="Contact & Consultation"
-        title="Talk to a chemist — most consults are free."
+        title="Talk to a Chemist — Most Consults Are Free."
         text="Tell us what you're testing and what you're looking for. No portal, no account, no obligation — just a straightforward conversation with someone who knows the lab."
       />
 

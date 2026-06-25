@@ -49,7 +49,7 @@ export default function Footer() {
             <Link href="/contact">Contact &amp; Consultation</Link>
           </div>
           <div className="foot-col">
-            <h5>Get in touch</h5>
+            <h5>Get in Touch</h5>
             <a href={SITE.phoneHref}>{SITE.phone}</a>
             <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
             <Link href="/get-started">Submit a Sample</Link>
