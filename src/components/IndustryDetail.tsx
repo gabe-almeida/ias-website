@@ -16,7 +16,6 @@ function IndustryHero({ d }: { d: IndustryPage }) {
           <span>{d.cardName}</span>
         </div>
         <span className="eyebrow light">
-          <span className="dot"></span>
           {d.eyebrow}
         </span>
         <h1 style={{ marginTop: 14 }}>{d.h1}</h1>
@@ -181,7 +180,6 @@ function Standards({ d }: { d: IndustryPage }) {
         <div className="std-band reveal">
           <div className="std-copy">
             <span className="eyebrow">
-              <span className="dot"></span>
               {d.stdEyebrow ?? "Standards & compliance"}
             </span>
             <h3>{d.stdH2}</h3>
@@ -325,7 +323,7 @@ function Custom({ d }: { d: IndustryPage }) {
           </div>
           <div className="cb-body">
             <span className="eyebrow">
-              <span className="dot"></span>Custom &amp; flexible work
+              Custom &amp; flexible work
             </span>
             <h3>{d.customH2 ?? "Don't see exactly what you need?"}</h3>
             <p>{d.customLine}</p>
@@ -334,7 +332,7 @@ function Custom({ d }: { d: IndustryPage }) {
                 Talk to a chemist <Arrow />
               </Link>
               <Link href="/custom-testing" className="btn btn-ghost">
-                Custom &amp; one-time testing
+                Custom and One-Time Testing
               </Link>
             </div>
           </div>

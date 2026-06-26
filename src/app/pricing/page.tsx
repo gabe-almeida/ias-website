@@ -16,7 +16,7 @@ export default function Pricing() {
       <PageHero
         crumb="Pricing & Test Catalog"
         title="Lab Pricing, About as Simple as It Gets."
-        text="Standard tests have standard prices. Heavy metals on a liquid sample? $190. SEM analysis? $250. Search the full catalog below — and for anything custom, just call."
+        text="Standard tests have standard prices. Heavy metals on a liquid sample? $190. SEM analysis? $325. Search the full catalog below — and for anything custom, just call."
       >
         <Link href="/get-started" className="btn btn-primary">
           Submit a sample <Arrow />

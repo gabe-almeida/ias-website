@@ -66,6 +66,34 @@ export default function QaPrograms() {
         </div>
       </section>
 
+      <section className="section">
+        <div className="wrap">
+          <SectionHead
+            eyebrow="Reagent Water Standard"
+            title="ASTM D1193 — Reagent-Grade Water Specification"
+            text="ASTM D1193 is the standard specification that defines the requirements for reagent-grade water used in laboratory and analytical testing. It establishes quality parameters across four purity levels (Type I through Type IV) to ensure water does not interfere with chemical analyses. Testing protocols and allowable contaminant limits vary significantly depending on the assigned Type."
+          />
+          <div className="cards">
+            <div className="card reveal">
+              <h3>Type I</h3>
+              <p>The highest purity, used for sensitive procedures such as trace metal analysis, HPLC, and gas chromatography. Requires a minimum electrical resistivity of 18 MΩ·cm at 25°C and a maximum Total Organic Carbon (TOC) of 50 ppb.</p>
+            </div>
+            <div className="card reveal">
+              <h3>Type II</h3>
+              <p>Used for general laboratory practices, reagent preparation, and qualitative analyses. Requires a resistivity of 1.0 MΩ·cm at 25°C and TOC up to 50 ppb.</p>
+            </div>
+            <div className="card reveal">
+              <h3>Type III</h3>
+              <p>Intended for routine analyses, glassware washing, and rinsing. Requires a resistivity of 4.0 MΩ·cm at 25°C and TOC up to 200 ppb.</p>
+            </div>
+            <div className="card reveal">
+              <h3>Type IV</h3>
+              <p>For general laboratory use where lower purity is acceptable. Requires a resistivity of 0.2 MΩ·cm at 25°C.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CtaBand
         title="Ready to Set up a Program?"
         text="We'll tailor scheduled testing to your facility and handle the logistics end-to-end."

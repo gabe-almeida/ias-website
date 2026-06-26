@@ -41,11 +41,10 @@ export function SectionHead({
     <div className="section-head reveal">
       {eyebrow && (
         <span className="eyebrow">
-          <span className="dot"></span>
           {eyebrow}
         </span>
       )}
-      <h2 style={{ marginTop: 16 }}>{title}</h2>
+      <h2 style={{ marginTop: 12 }}>{title}</h2>
       {text && <p>{text}</p>}
     </div>
   );
@@ -149,7 +148,7 @@ export function InstrumentsGrid() {
 export function WhyCards() {
   const cards: [string, string, string, string][] = [
     ["ic-blue", '<circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="20" r="2.4"/><path d="M7 7l3 3M17 7l-3 3M12 15v3"/>', "Sophisticated Instrumentation", "ICP-MS, ICP-OES, GC-MS, NMR, FTIR and SEM/EDS under one roof — trace metals to molecular structure to surface analysis."],
-    ["ic-orange", '<path d="M3 6h18M3 12h18M3 18h12"/><circle cx="20" cy="18" r="2"/>', "Catalog-Style Pricing", "Standard tests have standard prices. Heavy metals on a liquid? $190. SEM analysis? $250. No mystery quotes for routine work."],
+    ["ic-orange", '<path d="M3 6h18M3 12h18M3 18h12"/><circle cx="20" cy="18" r="2"/>', "Catalog-Style Pricing", "Standard tests have standard prices. Heavy metals on a liquid? $190. SEM analysis? $325. No mystery quotes for routine work."],
     ["ic-gold", '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>', "No Bureaucracy", "Submit samples without setting up a formal account. One-off requests are welcome alongside long-term programs."],
     ["ic-navy", '<path d="M3 9l9-6 9 6v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 21V12h6v9"/>', "Materials Supplied Free", "We can send the bottles, sample containers, and submission materials you need at no extra charge. Just tell us what you're testing."],
     ["ic-blue", P.phone, "Talk to a Real Chemist", "Most consultations are included. Get on the phone with experienced chemists and chemical engineers — not a ticket queue."],
@@ -221,7 +220,7 @@ export function ServicesSplit() {
         <h3>Quality Assurance &amp; Scheduled Testing</h3>
         <p className="desc">Many clients rely on IAS for ongoing, scheduled QA testing — routine programs that keep operations in compliance and processes under control. Accounts are easy to open and we handle the logistics.</p>
         <ul className="svc-list">
-          <li><Check />ASTM standardized testing (Type I, II, III &amp; more)</li>
+          <li><Check />ASTM Standardized Testing (D1193, Type I, Type II, Type III, and more)</li>
           <li><Check />Endotoxin (LAL) &amp; mycoplasma detection</li>
           <li><Check />Dialysis water &amp; cooling tower monitoring</li>
           <li><Check />Raw material, in-process &amp; finished product QC</li>
@@ -232,7 +231,7 @@ export function ServicesSplit() {
         <Link href="/qa-programs" className="btn btn-primary btn-sm">Explore QA programs</Link>
       </div>
       <div className="svc-card svc-custom reveal">
-        <h3>Custom &amp; One-Time Testing</h3>
+        <h3>Custom and One-Time Testing</h3>
         <p className="desc">Not every testing need fits a standard program. Whether you have a single sample to investigate or a specific analyte to confirm, IAS handles it — no long-term commitment, and no account required.</p>
         <ul className="svc-list">
           <li><Check />Unknown substance &amp; contaminant identification</li>
@@ -240,7 +239,7 @@ export function ServicesSplit() {
           <li><Check />R&amp;D support &amp; competitive product analysis</li>
           <li><Check />Veterinary &amp; research biological matrix testing</li>
         </ul>
-        <Link href="/custom-testing" className="btn btn-blue btn-sm">Custom &amp; one-time</Link>
+        <Link href="/custom-testing" className="btn btn-blue btn-sm">Custom and One-Time Testing</Link>
       </div>
     </div>
   );
@@ -249,7 +248,7 @@ export function ServicesSplit() {
 export function PricePop() {
   const pops: [string, string, boolean][] = [
     ["Heavy Metals Panel (Multi-Element)", "$190", true],
-    ["SEM / EDS Analysis", "$250", false],
+    ["SEM / EDS Analysis", "$325", false],
     ["PFAS — 18 Compounds", "$415", false],
     ["Total Coliform & E. coli", "$65", false],
   ];

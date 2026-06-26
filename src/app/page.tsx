@@ -29,7 +29,7 @@ export default function Home() {
         <div className="wrap hero-grid">
           <div className="hero-copy reveal">
             <span className="eyebrow">
-              <span className="dot"></span>Independent Analytical Laboratory · Est. 2000
+              Independent Analytical Laboratory · Est. 2000
             </span>
             <h1 style={{ marginTop: 20 }}>
               Industrial-Grade Testing,
@@ -84,47 +84,6 @@ export default function Home() {
               <div>
                 <div className="t">Flat-rate</div>
                 <div className="s">catalog pricing</div>
-              </div>
-            </div>
-            <div className="hero-card">
-              <div className="hc-top">
-                <div>
-                  <div style={{ fontWeight: 800, color: "var(--navy)", fontSize: "1.05rem" }}>
-                    Sample #IAS-4821
-                  </div>
-                  <div style={{ fontSize: ".8rem", color: "var(--slate)", fontFamily: "var(--font-inter)", marginTop: 2 }}>
-                    Potable water · standard turnaround
-                  </div>
-                </div>
-                <span className="tag">Reported</span>
-              </div>
-              <div className="hc-row">
-                <div>
-                  <div className="nm">Heavy Metals Panel</div>
-                  <div className="sub">ICP-MS · multi-element</div>
-                </div>
-                <div className="pr">$190</div>
-              </div>
-              <div className="hc-row">
-                <div>
-                  <div className="nm">SEM / EDS Analysis</div>
-                  <div className="sub">Surface &amp; elemental</div>
-                </div>
-                <div className="pr">$250</div>
-              </div>
-              <div className="hc-row">
-                <div>
-                  <div className="nm">VOCs Scan</div>
-                  <div className="sub">GC-MS · 59 compounds</div>
-                </div>
-                <div className="pr">$150</div>
-              </div>
-              <div className="hc-row">
-                <div>
-                  <div className="nm">Total Coliform &amp; E. coli</div>
-                  <div className="sub">Presence / absence</div>
-                </div>
-                <div className="pr">$65</div>
               </div>
             </div>
           </div>
@@ -205,7 +164,7 @@ export default function Home() {
           <SectionHead
             eyebrow="Pricing & Test Catalog"
             title="Lab Pricing, About as Simple as It Gets"
-            text="Heavy metals on a liquid sample? $190. SEM analysis? $250. Standard tests have standard prices."
+            text="Heavy metals on a liquid sample? $190. SEM analysis? $325. Standard tests have standard prices."
           />
           <PricePop />
           <div className="center">

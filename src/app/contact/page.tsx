@@ -23,7 +23,7 @@ export default function Contact() {
       <section className="section">
         <div className="wrap contact-grid">
           <div className="contact-info reveal">
-            <span className="eyebrow"><span className="dot"></span>Get in touch</span>
+            <span className="eyebrow">Get in touch</span>
             <h2 style={{ marginTop: 16 }}>We're easy to reach</h2>
             <p className="lead">Call, email, or send the form — we reply fast and we'll tell you exactly how to get your sample to us.</p>
             <div className="info-item">
