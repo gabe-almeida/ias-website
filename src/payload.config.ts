@@ -28,6 +28,8 @@ export default buildConfig({
         Logo: "/components/admin/Logo#Logo",
         Icon: "/components/admin/Icon#Icon",
       },
+      // Cloudflare Turnstile bot-gate above the login form (no-op until keys set).
+      beforeLogin: ["/components/admin/TurnstileGate#TurnstileGate"],
     },
     // Resolve component string paths (above) relative to /src.
     importMap: { baseDir: dirname },

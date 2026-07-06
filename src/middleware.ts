@@ -44,6 +44,27 @@ function clientIp(req: NextRequest): string {
   );
 }
 
+// Verify a Cloudflare Turnstile token server-side. Only enforced when
+// TURNSTILE_SECRET_KEY is set (prod) — otherwise login is ungated (dev).
+async function turnstileOk(req: NextRequest, ip: string): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) return true; // not configured -> don't block
+  const token = req.cookies.get("cf-turnstile-response")?.value;
+  if (!token) return false;
+  try {
+    const body = new URLSearchParams({ secret, response: token });
+    if (ip && ip !== "unknown") body.set("remoteip", ip);
+    const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body,
+    });
+    const data = (await r.json()) as { success?: boolean };
+    return Boolean(data.success);
+  } catch {
+    return false;
+  }
+}
+
 // Sensitive auth endpoints — tight limit to stop credential-stuffing.
 const AUTH_PATHS = [
   "/api/users/login",
@@ -52,7 +73,13 @@ const AUTH_PATHS = [
   "/api/users/refresh-token",
 ];
 
-export function middleware(req: NextRequest) {
+const jsonError = (status: number, message: string, headers: Record<string, string> = {}) =>
+  new NextResponse(JSON.stringify({ errors: [{ message }] }), {
+    status,
+    headers: { "Content-Type": "application/json", ...headers },
+  });
+
+export async function middleware(req: NextRequest) {
   const now = Date.now();
   sweep(now);
   const ip = clientIp(req);
@@ -66,17 +93,18 @@ export function middleware(req: NextRequest) {
     : hit(`api:${ip}`, 600, 60_000, now);
 
   if (!res.ok) {
-    return new NextResponse(
-      JSON.stringify({ errors: [{ message: "Too many requests. Please slow down and try again shortly." }] }),
-      {
-        status: 429,
-        headers: {
-          "Content-Type": "application/json",
-          "Retry-After": String(res.retryAfter),
-        },
-      },
-    );
+    return jsonError(429, "Too many requests. Please slow down and try again shortly.", {
+      "Retry-After": String(res.retryAfter),
+    });
   }
+
+  // Bot gate on login: require a valid Turnstile token (when configured).
+  if (req.method === "POST" && path.startsWith("/api/users/login")) {
+    if (!(await turnstileOk(req, ip))) {
+      return jsonError(403, "Bot verification failed. Please complete the challenge and try again.");
+    }
+  }
+
   return NextResponse.next();
 }
 
