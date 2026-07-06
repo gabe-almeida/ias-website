@@ -117,12 +117,11 @@ header.nav.scrolled{border-color:var(--line);box-shadow:0 8px 24px -18px rgba(7,
 .hc-row .nm{font-weight:600;color:var(--navy);font-size:.97rem}
 .hc-row .sub{font-size:.8rem;color:var(--slate);font-family:var(--font-inter)}
 .hc-row .pr{font-weight:800;color:var(--blue);font-size:1.05rem}
-.float{position:absolute;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:13px 16px;display:flex;align-items:center;gap:11px;z-index:3}
+.hero-cards{position:relative;z-index:3;display:flex;flex-direction:column;gap:18px;width:100%;max-width:300px;margin:0 auto}
+.float{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:15px 18px;display:flex;align-items:center;gap:12px}
 .float .ico{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none}
 .float .t{font-weight:800;font-size:1.02rem;color:var(--navy);line-height:1.1}
 .float .s{font-size:.74rem;color:var(--slate);font-family:var(--font-inter)}
-.float.f1{top:-26px;left:-34px}
-.float.f2{bottom:-26px;right:-26px}
 .blob{position:absolute;border-radius:50%;filter:blur(8px);opacity:.5;z-index:1}
 
 /* ============================== PAGE HERO (subpages) ============================== */
@@ -294,6 +293,13 @@ header.nav.scrolled{border-color:var(--line);box-shadow:0 8px 24px -18px rgba(7,
 .split-media{position:relative;background:linear-gradient(150deg,#063A8E,#05409B 55%,#0A2E6B);border-radius:var(--radius-lg);
   min-height:380px;overflow:hidden;display:grid;place-items:center;box-shadow:var(--shadow)}
 .split-media::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:24px 24px;opacity:.6}
+/* Real-photo variant: image fills the panel; caption sits on a gradient scrim. */
+.split-media.has-photo{background:#0A2E6B}
+.split-media.has-photo::after{display:none}
+.split-media .media-photo{object-fit:cover;z-index:1}
+.split-media .media-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;color:#fff;font-family:var(--font-inter);
+  font-size:.95rem;letter-spacing:.02em;padding:34px 24px 18px;
+  background:linear-gradient(to top,rgba(5,20,45,.82),rgba(5,20,45,0))}
 .split-media .badge-float{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;color:#fff;padding:48px 30px}
 .split-media .badge-float::before{content:"";width:2px;height:30px;background:linear-gradient(var(--gold),transparent);border-radius:2px}
 .split-media .badge-float .big{font-size:2.6rem;font-weight:800;letter-spacing:-.02em;line-height:1;padding:18px 28px;border-radius:22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.26);box-shadow:0 14px 34px rgba(0,0,0,.20);backdrop-filter:blur(4px)}
@@ -478,7 +484,7 @@ footer{background:var(--navy);color:#fff;padding:70px 0 30px}
   .cards,.inst,.ind,.ind.three,.vrow,.pkg-grid,.lead-form .row,.foot-grid{grid-template-columns:1fr}
   .foot-grid{gap:30px}
   .cta-band,.svc-card,form.lead-form{padding:32px 24px}
-  .float{display:none}
+  .hero-cards{flex-direction:row;max-width:none;justify-content:center;flex-wrap:wrap}
   .hero h1{font-size:2.4rem}
   .brand img{height:46px}
   /* Catalog table fits the phone — fixed layout, tighter price gap, no horizontal scroll */

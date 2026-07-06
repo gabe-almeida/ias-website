@@ -68,22 +68,24 @@ export default function Home() {
           <div className="hero-visual reveal">
             <div className="blob" style={{ width: 230, height: 230, background: "#BFD4FF", top: -30, right: 10 }}></div>
             <div className="blob" style={{ width: 180, height: 180, background: "#FFD0B0", bottom: -20, left: 0 }}></div>
-            <div className="float f1">
-              <div className="ico" style={{ background: "linear-gradient(135deg,#0A4BAE,#05409B)" }}>
-                <Svg paths='<path d="M9 3v6l-5 9a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 18l-5-9V3"/><path d="M8 3h8M7.5 14h9"/>' />
+            <div className="hero-cards">
+              <div className="float">
+                <div className="ico" style={{ background: "linear-gradient(135deg,#0A4BAE,#05409B)" }}>
+                  <Svg paths='<path d="M9 3v6l-5 9a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 18l-5-9V3"/><path d="M8 3h8M7.5 14h9"/>' />
+                </div>
+                <div>
+                  <div className="t">No account</div>
+                  <div className="s">to get started</div>
+                </div>
               </div>
-              <div>
-                <div className="t">No account</div>
-                <div className="s">to get started</div>
-              </div>
-            </div>
-            <div className="float f2">
-              <div className="ico" style={{ background: "linear-gradient(135deg,#1AA563,#0E8C50)" }}>
-                <Check />
-              </div>
-              <div>
-                <div className="t">Flat-rate</div>
-                <div className="s">catalog pricing</div>
+              <div className="float">
+                <div className="ico" style={{ background: "linear-gradient(135deg,#1AA563,#0E8C50)" }}>
+                  <Check />
+                </div>
+                <div>
+                  <div className="t">Flat-rate</div>
+                  <div className="s">catalog pricing</div>
+                </div>
               </div>
             </div>
           </div>

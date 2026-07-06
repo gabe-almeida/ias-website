@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Arrow, Svg, PageHero, CtaBand, SectionHead } from "@/components/blocks";
 
 export const metadata: Metadata = {
@@ -39,11 +40,15 @@ export default function QaPrograms() {
               Open an account
             </Link>
           </div>
-          <div className="split-media media-soft reveal">
-            <div className="badge-float">
-              <div className="big"><span>ASTM</span></div>
-              <div className="cap">ASTM D1193 — Type I · II · III · IV &amp; more</div>
-            </div>
+          <div className="split-media has-photo reveal">
+            <Image
+              src="/images/services/qa-programs.webp"
+              alt="Scheduled quality-assurance testing program at IAS"
+              fill
+              sizes="(max-width: 980px) 100vw, 50vw"
+              className="media-photo"
+            />
+            <div className="media-cap">ASTM D1193 — Type I · II · III · IV &amp; more</div>
           </div>
         </div>
       </section>
