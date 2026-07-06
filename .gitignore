@@ -32,6 +32,12 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# Payload local artifacts (the SQLite db + uploaded media live on Render's disk)
+/blog.db
+/blog.db-*
+/media
 
 # vercel
 .vercel

@@ -1,0 +1,38 @@
+# Render Blueprint — deploys the IAS site + Science Hub CMS as one Node web
+# service with a persistent disk holding the SQLite database and uploaded media.
+# Import via Render Dashboard → New → Blueprint (points at this repo).
+services:
+  - type: web
+    name: ias-website
+    runtime: node
+    plan: starter # 512MB/0.5CPU. Bump to "standard" (2GB) if the build/runtime OOMs.
+    region: ohio
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    autoDeploy: true
+    # SQLite file + media both live here so they survive redeploys/restarts.
+    disk:
+      name: ias-data
+      mountPath: /var/data
+      sizeGB: 5
+    envVars:
+      - key: NODE_VERSION
+        value: "20.20.1"
+      - key: NODE_ENV
+        value: production
+      # Generated once by Render and kept stable (rotating invalidates sessions).
+      - key: PAYLOAD_SECRET
+        generateValue: true
+      - key: DATABASE_URI
+        value: file:/var/data/blog.sqlite
+      - key: MEDIA_DIR
+        value: /var/data/media
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://iasamerica.com
+      # Cloudflare Turnstile (optional app-level; set from the CF dashboard).
+      - key: TURNSTILE_SITE_KEY
+        sync: false
+      - key: TURNSTILE_SECRET_KEY
+        sync: false
