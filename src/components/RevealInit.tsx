@@ -20,7 +20,10 @@ export default function RevealInit() {
           }
         });
       },
-      { threshold: 0.12 }
+      // threshold 0 = reveal as soon as any part enters the viewport, so a tall
+      // item only peeking at the fold edge on load isn't stranded invisible
+      // until the user scrolls.
+      { threshold: 0 }
     );
     els.forEach((el) => {
       if (!el.classList.contains("in")) io.observe(el);

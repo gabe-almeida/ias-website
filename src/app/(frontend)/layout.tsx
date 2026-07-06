@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { SITE } from "@/lib/site";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -88,7 +88,7 @@ const ORG_JSONLD = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${jakarta.variable} ${inter.variable}`}>
       <body>

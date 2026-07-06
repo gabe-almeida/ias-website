@@ -1,7 +1,9 @@
 export const SITE = {
   name: "Industrial Analytical Services",
   short: "IAS",
-  baseUrl: "https://iasamerica.com",
+  // Canonical origin for metadata/sitemap/robots/JSON-LD. Env-driven so it is
+  // correct per environment (Render prod, previews, local) — falls back to prod.
+  baseUrl: (process.env.NEXT_PUBLIC_SITE_URL || "https://iasamerica.com").replace(/\/$/, ""),
   phone: "(978) 466-3422",
   phoneHref: "tel:9784663422",
   email: "info@iasamerica.com",
@@ -29,6 +31,7 @@ export const NAV_ITEMS: NavItem[] = [
   { key: "services", label: "Services", href: "/services" },
   { key: "instrumentation", label: "Instrumentation", href: "/instrumentation" },
   { key: "industries", label: "Industries", href: "/industries" },
+  { key: "hub", label: "Science Hub", href: "/science-hub" },
   { key: "pricing", label: "Pricing", href: "/pricing" },
   { key: "contact", label: "Contact", href: "/contact" },
 ];

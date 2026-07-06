@@ -1,0 +1,39 @@
+/* IAS-branded Payload admin.
+   Payload derives its accent (links, active nav, focus rings, primary actions)
+   from the "success" color ramp — remap it to IAS blue (#05409B) so the CMS
+   matches the public site. Logo/icon + title come from the Payload config. */
+
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
+  --color-success-50: #eef3fc;
+  --color-success-100: #dbe6f8;
+  --color-success-200: #b7cdf1;
+  --color-success-300: #7fa6e2;
+  --color-success-400: #2c63c7;
+  --color-success-500: #05409b;
+  --color-success-600: #0a3a82;
+  --color-success-700: #0b326d;
+  --color-success-800: #0a2957;
+  --color-success-900: #071d3d;
+
+  --theme-success-50: #eef3fc;
+  --theme-success-100: #dbe6f8;
+  --theme-success-200: #b7cdf1;
+  --theme-success-300: #7fa6e2;
+  --theme-success-400: #2c63c7;
+  --theme-success-500: #05409b;
+  --theme-success-550: #073a8e;
+  --theme-success-600: #0a3a82;
+  --theme-success-650: #0a3577;
+  --theme-success-700: #0b326d;
+  --theme-success-800: #0a2957;
+  --theme-success-900: #071d3d;
+}
+
+/* Keep the login logo tidy and centered. */
+.login__brand img,
+.graphic-logo img {
+  max-height: 60px;
+  width: auto;
+}

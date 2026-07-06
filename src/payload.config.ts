@@ -1,0 +1,59 @@
+import path from "path";
+import { fileURLToPath } from "url";
+import { buildConfig } from "payload";
+import { sqliteAdapter } from "@payloadcms/db-sqlite";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { seoPlugin } from "@payloadcms/plugin-seo";
+import sharp from "sharp";
+
+import { Posts } from "./collections/Posts";
+import { Categories } from "./collections/Categories";
+import { Media } from "./collections/Media";
+import { Users } from "./collections/Users";
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+export default buildConfig({
+  admin: {
+    user: Users.slug,
+    meta: {
+      titleSuffix: " · IAS Science Hub",
+      description: "Content management for the IAS Science Hub.",
+    },
+    components: {
+      // On-brand admin login/nav graphics (IAS logo). Registered via importMap.
+      graphics: {
+        Logo: "/components/admin/Logo#Logo",
+        Icon: "/components/admin/Icon#Icon",
+      },
+    },
+    // Resolve component string paths (above) relative to /src.
+    importMap: { baseDir: dirname },
+  },
+  collections: [Posts, Categories, Media, Users],
+  editor: lexicalEditor(),
+  secret: process.env.PAYLOAD_SECRET || "",
+  db: sqliteAdapter({
+    client: { url: process.env.DATABASE_URI || "file:./blog.db" },
+    // Auto-sync schema on boot (additive). Keeps first deploy on a fresh disk
+    // zero-config. For destructive schema changes later, generate a migration
+    // (`npm run payload -- migrate:create`) and review before deploying.
+    push: true,
+  }),
+  sharp,
+  cors: [siteUrl],
+  csrf: [siteUrl],
+  typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
+  plugins: [
+    seoPlugin({
+      collections: ["posts"],
+      uploadsCollection: "media",
+      tabbedUI: true,
+      generateTitle: ({ doc }: { doc?: { title?: string } }) =>
+        doc?.title ? `${doc.title} | IAS Science Hub` : "IAS Science Hub",
+      generateDescription: ({ doc }: { doc?: { excerpt?: string } }) => doc?.excerpt ?? "",
+    }),
+  ],
+});

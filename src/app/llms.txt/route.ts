@@ -1,12 +1,13 @@
 import { SITE } from "@/lib/site";
 import { INDUSTRY_PAGES } from "@/data/industryPages";
+import { getAllPosts } from "@/lib/posts";
 
 // Serves /llms.txt — a curated, LLM-friendly index of the site so answer
 // engines (ChatGPT, Claude, Perplexity, Gemini) can find and cite IAS
 // accurately. Generated from site data so it never drifts out of sync.
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
-export function GET() {
+export async function GET() {
   const base = SITE.baseUrl;
   const accreditation = SITE.accreditations.map((a) => a.label).join("; ");
 
@@ -45,6 +46,15 @@ export function GET() {
     lines.push(`- [${p.cardName}](${base}/industries/${p.slug}): ${p.metaDesc}`);
   }
   lines.push("");
+
+  const posts = await getAllPosts();
+  if (posts.length) {
+    lines.push("## Science Hub articles");
+    for (const p of posts) {
+      lines.push(`- [${p.title}](${base}/science-hub/${p.slug}): ${p.excerpt}`);
+    }
+    lines.push("");
+  }
 
   return new Response(lines.join("\n"), {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
