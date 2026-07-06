@@ -14,12 +14,12 @@ service on Render (not Vercel — Vercel is serverless and can't persist SQLite)
 - Posts render Lexical via `@payloadcms/richtext-lexical/react` `<RichText>`; new/edited posts revalidate their pages instantly (`src/hooks/revalidatePost.ts`) plus 5‑min ISR.
 
 ## First-time deploy (Render)
-1. **Create the service** from `render.yaml` (Dashboard → New → Blueprint). It provisions a `starter` web service + 5 GB disk at `/var/data`, and sets env vars (`PAYLOAD_SECRET` auto-generated, `DATABASE_URI=file:/var/data/blog.sqlite`, `MEDIA_DIR=/var/data/media`, `NEXT_PUBLIC_SITE_URL=https://iasamerica.com`).
+1. **Create the service** from `render.yaml` (Dashboard → New → Blueprint). It provisions a `standard` web service (2 GB) + 5 GB disk at `/var/data`, and sets env vars (`PAYLOAD_SECRET` auto-generated, `DATABASE_URI=file:/var/data/blog.sqlite`, `MEDIA_DIR=/var/data/media`, `NEXT_PUBLIC_SITE_URL=https://iasamerica.com`). Standard is required because `next build` (Turbopack + Payload) peaks past the 512 MB `starter` tier and OOMs there.
 2. **First boot** auto-creates the DB schema on the disk (`db.push`).
 3. **Create the first admin**: visit `https://<service>/admin` → create-first-user. Choose role **Admin**.
 4. **Seed the two legacy posts (one time):** in the Render Shell run `npm run seed:posts`. It's idempotent but should be run **once** — re-running overwrites those posts back to the markdown source, discarding later admin edits.
 5. **Point the domain**: add `iasamerica.com` to the Render service, then move DNS to Cloudflare (below).
-6. If the build or runtime OOMs on the 512 MB `starter` plan, bump `plan: standard` (2 GB) in `render.yaml`.
+6. Runtime is light (mostly static/ISR pages) — if you ever want to trim cost, you can build on CI and run the runtime on a smaller tier; the **build** is what needs the 2 GB.
 
 ## Security (defense-in-depth)
 - **Payload auth** (built-in): salted+hashed passwords, httpOnly **secure** cookies in prod, sessions, and account **lockout** after 5 failed logins for 15 min (`src/collections/Users.ts`). CSRF + CORS pinned to the site origin.
