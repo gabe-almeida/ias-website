@@ -26,13 +26,6 @@ export default function Footer() {
               An independent analytical laboratory for industrial, commercial &amp;
               biomedical testing. Founded 2000.
             </p>
-            <p className="etr">
-              In operating partnership with{" "}
-              <a href="https://etrlabs.com" target="_blank" rel="noopener">
-                ETR Laboratories
-              </a>{" "}
-              — our sister company.
-            </p>
           </div>
           <div className="foot-col">
             <h5>Services</h5>

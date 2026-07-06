@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import { IndustryPage, BlockKey } from "@/data/industryPages";
 import { industryBySlug } from "@/data/industries";
@@ -51,7 +52,18 @@ function Overview({ d }: { d: IndustryPage }) {
       </ul>
     </div>
   );
-  const media = (
+  const media = d.image ? (
+    <div className="split-media has-photo reveal">
+      <Image
+        src={d.image}
+        alt={d.imageAlt ?? `${d.cardName} testing at IAS`}
+        fill
+        sizes="(max-width: 980px) 100vw, 50vw"
+        className="media-photo"
+      />
+      {d.media?.[1] && <div className="media-cap">{d.media[1]}</div>}
+    </div>
+  ) : (
     <div className="split-media reveal">
       <div className="badge-float">
         <div className="big">{d.media?.[0]}</div>

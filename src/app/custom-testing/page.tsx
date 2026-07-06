@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Arrow, Check, PageHero, CtaBand } from "@/components/blocks";
 
 export const metadata: Metadata = {
@@ -27,11 +28,15 @@ export default function CustomTesting() {
 
       <section className="section">
         <div className="wrap split rev">
-          <div className="split-media reveal">
-            <div className="badge-float">
-              <div className="big">No account<br /><span>required</span></div>
-              <div className="cap">Just call or email — we'll walk you through what to send.</div>
-            </div>
+          <div className="split-media has-photo reveal">
+            <Image
+              src="/images/services/custom-testing.webp"
+              alt="Custom one-time analytical investigation at IAS"
+              fill
+              sizes="(max-width: 980px) 100vw, 50vw"
+              className="media-photo"
+            />
+            <div className="media-cap">Just call or email — we&apos;ll walk you through what to send.</div>
           </div>
           <div className="prose reveal">
             <h2>Investigations, Failures &amp; Unknowns</h2>

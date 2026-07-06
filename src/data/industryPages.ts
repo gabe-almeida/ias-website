@@ -37,6 +37,10 @@ export type IndustryPage = {
   paragraphs?: string[];
   solutions?: string[];
   media?: [string, string];
+  // Real photo for the split-media panel. When set, it replaces the gradient
+  // abbreviation badge; media[1] is kept as the caption overlaid on the image.
+  image?: string;
+  imageAlt?: string;
   mediaLeft?: boolean;
   chEyebrow?: string;
   chH2?: string;
@@ -132,6 +136,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "In-process checks and finished-product release testing",
     ],
     media: ["USP", "Elemental impurities · endotoxin · release"],
+    image: "/images/industries/pharmaceutical-testing.webp",
     stdH2: "Built for Regulated Release",
     stdEyebrow: "Standards We Work To",
     stdP:
@@ -147,10 +152,10 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
     tH2: "Common Pharmaceutical Tests & Pricing",
     tP: "A representative slice of routine pharma work — anything compendial or custom can be quoted on a call.",
     tests: [
-      { name: "Elemental impurities panel (ICH Q3D)", method: "ICP-MS", price: "$190" },
+      { name: "Elemental impurities panel (ICH Q3D)", method: "ICP-MS", price: "Call to quote" },
       { name: "Bacterial endotoxin (LAL)", method: "Kinetic / gel-clot", price: "$140" },
       { name: "Mycoplasma screening", method: "Culture / PCR", price: "Call to quote" },
-      { name: "Residual solvents", method: "GC-MS", price: "$150" },
+      { name: "Residual solvents", method: "GC-MS", price: "$175" },
       { name: "Compound / API identity", method: "NMR", price: "$325" },
       { name: "USP purified water suite", method: "Conductivity · TOC · microbial", price: "$165" },
     ],
@@ -229,7 +234,8 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Surface, coating & particulate analysis by SEM/EDS",
       "Trace metals & elemental content by ICP-MS",
     ],
-    media: ["ISO", "10993 chemical characterization support"],
+    media: ["ISO", "ISO 10993 chemical characterization support"],
+    image: "/images/industries/medical-device-testing.webp",
     mediaLeft: true,
     stdH2: "Aligned to Device Expectations",
     stdEyebrow: "Frameworks We Support",
@@ -295,6 +301,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Clear, audit-ready reporting each cycle",
     ],
     media: ["AAMI", "Chemical · microbial · endotoxin panel"],
+    image: "/images/industries/dialysis-water-testing.webp",
     stdH2: "Run to the Dialysis Water Standards",
     stdEyebrow: "Standards",
     stdP: "Our panels follow the recognized ANSI/AAMI framework for water and dialysate used in hemodialysis.",
@@ -305,7 +312,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       { name: "AAMI chemical contaminant panel", method: "ICP-MS, GC-MS, and more", price: "$210" },
       { name: "Heterotrophic plate count", method: "Membrane filtration", price: "$45" },
       { name: "Endotoxin", method: "Kinetic", price: "$140" },
-      { name: "AME Panel", method: "Per program", price: "Call to quote" },
+      { name: "AAMI Panel", method: "Per program", price: "Call to quote" },
     ],
     pH2: "How a Dialysis Program Runs",
     pP: "We supply the bottles and sampling instructions, and your results return on a predictable cycle.",
@@ -354,6 +361,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Direct consultation on study design & interpretation",
     ],
     media: ["ppt", "Trace-level metals in biological matrices"],
+    image: "/images/industries/clinical-research-testing.webp",
     mH2: "Biological Matrices We Analyze",
     mEyebrow: "Sample Types",
     matrices: [
@@ -426,6 +434,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Direct consultation with an experienced chemist",
     ],
     media: ["Tox", "Metals · pesticides · contaminants"],
+    image: "/images/industries/veterinary-toxicology-testing.webp",
     tH2: "Veterinary Tests & Pricing",
     tP: "Have concerns about toxic chemicals or other specific contaminants? Contact us for a quote.",
     tests: [
@@ -485,7 +494,8 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Failure analysis by SEM/EDS, FTIR and ICP",
       "Unknown deposit, scale & residue identification",
     ],
-    media: ["Root", "cause from the chemistry up"],
+    media: ["Root", "Root cause from the chemistry up"],
+    image: "/images/industries/industrial-process-testing.webp",
     mediaLeft: true,
     chH2: "Where Process Testing Earns Its Keep",
     chEyebrow: "Typical Work",
@@ -504,9 +514,9 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
     tests: [
       { name: "Failure analysis (SEM/EDS)", method: "SEM/EDS", price: "$325" },
       { name: "Metals in process water / fluid", method: "ICP-OES", price: "$160" },
-      { name: "Cooling-tower water panel", method: "Multi-parameter", price: "$140" },
+      { name: "Cooling-tower water panel", method: "Multi-parameter", price: "Call to quote" },
       { name: "Legionella", method: "Culture / PCR", price: "$300" },
-      { name: "Unknown deposit / scale ID", method: "FTIR · SEM/EDS", price: "$175" },
+      { name: "Unknown deposit / scale ID", method: "FTIR · SEM/EDS", price: "$325" },
       { name: "Raw-material conformance", method: "Method-dependent", price: "Call to quote" },
     ],
     faqs: [
@@ -553,6 +563,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Custom method development & documentation",
     ],
     media: ["NMR", "Structure · purity · identity"],
+    image: "/images/industries/chemical-testing.webp",
     iH2: "Instruments for Molecular Certainty",
     instruments: [
       { abbr: "NMR", use: "definitive structure elucidation, identity confirmation and purity by integration" },
@@ -624,7 +635,8 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Mycotoxin analysis",
       "Process- and ingredient-water quality",
     ],
-    media: ["QA", "Microbiology · residues · metals"],
+    media: ["QA", "Microbiology · Residues · Metals"],
+    image: "/images/industries/food-beverage-testing.webp",
     tH2: "Food & Beverage Tests & Pricing",
     tests: [
       { name: "Total coliform & E. coli", method: "Quantification (SM 9223B — Colilert/Quanti-Tray)", price: "$65" },
@@ -683,6 +695,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Process & waste water characterization",
     ],
     media: ["H2O", "Inorganic · organic · microbial"],
+    image: "/images/industries/water-testing.webp",
     pkgEyebrow: "Water Analysis Packages",
     pkgH2: "Process-Water Analysis Packages",
     pkgP:
@@ -691,7 +704,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       { name: "Standard", desc: "Microbiological standard plate count plus core inorganics — calcium, magnesium, iron, sodium, hardness, pH, conductivity, alkalinity, turbidity, chloride, nitrate/nitrite, sulfate, lead, arsenic and more.", price: "$190" },
       { name: "Comprehensive", desc: "Everything in Standard, plus the full volatile organics (VOC) panel — benzene, toluene, the trihalomethanes and the full 59-compound list.", price: "$265" },
       { name: "Comprehensive Plus", desc: "Everything in Comprehensive, plus an expanded organics and microanalytical workup for more demanding compliance profiles.", price: "$365" },
-      { name: "Micro Process Water Package", desc: "Microbiological + organics + a full heavy-metals panel (antimony, beryllium, cadmium, chromium, mercury, nickel, selenium, silver, thallium, zinc) — the complete process-water workup.", price: "$565" },
+      { name: "Process Water Package", desc: "Microbiological + organics + a full heavy-metals panel (antimony, beryllium, cadmium, chromium, mercury, nickel, selenium, silver, thallium, zinc) — the complete process-water workup.", price: "$565" },
     ],
     tH2: "Water Tests & Pricing",
     tests: [
@@ -780,7 +793,8 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "Legionella in water & source investigation",
       "Chain-of-custody & litigation-quality documentation",
     ],
-    media: ["PFAS", "plus metals, VOCs, SVOCs & PCBs"],
+    media: ["PFAS", "PFAS plus metals, VOCs, SVOCs & PCBs"],
+    image: "/images/industries/environmental-testing.webp",
     mediaLeft: true,
     tH2: "Environmental Tests & Pricing",
     tests: [
@@ -846,6 +860,7 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
       "No standing account required for pilot work",
     ],
     media: ["R&D", "Any matrix · custom methods"],
+    image: "/images/industries/rd-analytical-testing.webp",
     chH2: "How R&D Teams Use Us",
     chEyebrow: "Typical Engagements",
     challenges: [
@@ -884,42 +899,42 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
     eyebrow: "Property & Facilities Testing",
     h1: "Property & Facilities Testing — Air, Water & Materials",
     heroP:
-      "Indoor air, water and material testing — asbestos, lead in paint, mold and VOCs — with the quick turnaround property managers and facilities teams need to act.",
-    title: "Facilities Testing Lab — Asbestos, Lead Paint, Mold & Indoor Air (VOCs) | IAS",
+      "Indoor air, water and material testing — asbestos, lead in paint and mold — with the quick turnaround property managers and facilities teams need to act.",
+    title: "Facilities Testing Lab — Asbestos, Lead Paint, Mold & Indoor Air | IAS",
     metaDesc:
-      "Property and facilities testing from IAS: indoor air quality and VOCs, asbestos identification, lead in paint, mold and material testing with quick turnaround for property managers and facilities teams.",
+      "Property and facilities testing from IAS: indoor air quality, asbestos identification, lead in paint, mold and material testing with quick turnaround for property managers and facilities teams.",
     serviceType: "Property & Facilities Testing",
     layout: ["challenges", "overview", "tests", "matrices", "faq", "custom", "related", "cta"],
     chH2: "What Facilities Teams Need Answered",
     chEyebrow: "Common Requests",
     challenges: [
       { icon: ICN.build, title: "Building Materials", text: "Asbestos identification and lead-in-paint testing for renovation and due diligence." },
-      { icon: ICN.bug, title: "Air & Mold", text: "Indoor air quality, VOCs and mold assessment when occupants raise concerns." },
+      { icon: ICN.bug, title: "Air & Mold", text: "Indoor air quality and mold assessment when occupants raise concerns." },
       { icon: ICN.wave, title: "Building Water", text: "Potable and system water testing for safety and compliance." },
     ],
     overviewH2: "Answers a Building Can Act On, Fast",
     lead:
       "Property managers, facilities teams and building owners use IAS for the air, water and material testing that resolves a complaint, clears a renovation, or supports due diligence — with turnaround that respects a deadline.",
     paragraphs: [
-      "We identify asbestos and lead in building materials, assess indoor air and VOCs, screen for mold, and test building water — then report it clearly enough to act on.",
+      "We identify asbestos and lead in building materials, assess indoor air, screen for mold, and test building water — then report it clearly enough to act on.",
       "One-off requests are welcome and materials are supplied, so a single concern does not require setting up an account.",
     ],
     solutions: [
       "Asbestos identification in building materials",
       "Lead in paint, dust & water",
       "Radon testing (air & water)",
-      "Indoor air quality & VOC screening",
+      "Indoor air quality screening",
       "Mold assessment",
       "Legionella testing for building water systems",
       "Potable & building-water testing",
     ],
-    media: ["IAQ", "Asbestos · lead · mold · VOCs"],
+    media: ["Indoor Air Quality", "Asbestos · lead · mold"],
+    image: "/images/industries/facilities-testing.webp",
     tH2: "Facilities Tests & Pricing",
     tests: [
       { name: "Asbestos identification", method: "PLM / microscopy", price: "$45" },
       { name: "Lead in paint", method: "ICP / method-dependent", price: "$55" },
       { name: "Radon", method: "Air / water", price: "$30" },
-      { name: "Indoor air VOCs", method: "GC-MS", price: "$150" },
       { name: "Mold assessment", method: "Microscopy / culture", price: "Call to quote" },
       { name: "Legionella", method: "Culture / PCR", price: "$300" },
       { name: "Building water panel", method: "Multi-parameter", price: "$140" },
@@ -928,13 +943,13 @@ export const INDUSTRY_PAGES: IndustryPage[] = [
     mEyebrow: "Sample Types",
     matrices: [
       { icon: ICN.build, title: "Building Materials", text: "Suspect asbestos materials, paint chips and surface dust." },
-      { icon: ICN.drop, title: "Air & Water", text: "Indoor air samples, VOC canisters and potable water." },
+      { icon: ICN.drop, title: "Air & Water", text: "Indoor air samples and potable water." },
       { icon: ICN.bug, title: "Mold & Surfaces", text: "Tape lifts, swabs and air samples for mold assessment." },
     ],
     faqs: [
       { q: "Do you identify asbestos in building materials?", a: "Yes. We identify asbestos in suspect building materials by microscopy with quick turnaround for renovation and due-diligence needs." },
       { q: "Can you test for lead in paint and dust?", a: "Yes — lead testing in paint, dust and water to support renovation, abatement and compliance." },
-      { q: "Do you assess indoor air quality and VOCs?", a: "We do. GC-MS-based VOC screening and indoor air quality assessment help resolve occupant complaints." },
+      { q: "Do you assess indoor air quality?", a: "We do. Indoor air quality assessment and mold screening help resolve occupant complaints." },
       { q: "Can I send a single sample without an account?", a: "Yes. One-off facilities samples are welcome and sampling materials are supplied at no extra charge." },
     ],
     customH2: "An Unusual Building Problem",

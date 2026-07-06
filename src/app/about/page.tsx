@@ -92,7 +92,7 @@ export default function About() {
           <div className="timeline reveal">
             <div className="tl"><div className="yr">2000</div><h4>IAS Is Founded</h4><p>Industrial Analytical Services opens as an independent lab focused on industrial and commercial testing.</p></div>
             <div className="tl"><div className="yr">Growth</div><h4>Instrumentation Deepens</h4><p>Investment in ICP-MS, GC-MS, NMR, FTIR and SEM/EDS broadens the range of matrices and questions we can take on.</p></div>
-            <div className="tl"><div className="yr">Today</div><h4>Partnership with ETR Laboratories</h4><p>IAS operates in partnership with sister company <a href="https://etrlabs.com" target="_blank" rel="noopener" style={{ color: "var(--blue)", fontWeight: 700 }}>ETR Laboratories</a>, extending capability and capacity across both labs.</p></div>
+            <div className="tl"><div className="yr">Today</div><h4>A Leading Independent Lab</h4><p>With over 25 years of analytical work and hands-on experience, IAS today stands as one of the leading laboratories assisting companies with research and development and quality assurance programs. We pride ourselves on being one of the most customer-service-friendly laboratories to work with, and we take pride in helping businesses of all sizes grow by getting them the data they need to develop and flourish in their products.</p></div>
           </div>
         </div>
       </section>
