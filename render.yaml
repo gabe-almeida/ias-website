@@ -34,8 +34,9 @@ services:
         value: /var/data/media
       - key: NEXT_PUBLIC_SITE_URL
         value: https://iasamerica.com
-      # Cloudflare Turnstile (optional app-level; set from the CF dashboard).
-      - key: TURNSTILE_SITE_KEY
+      # Cloudflare Turnstile (bot-gate on /admin login). Create a widget in the
+      # CF dashboard → Turnstile, then paste the keys here. Leave blank to disable.
+      - key: NEXT_PUBLIC_TURNSTILE_SITE_KEY
         sync: false
       - key: TURNSTILE_SECRET_KEY
         sync: false
