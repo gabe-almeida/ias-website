@@ -5,7 +5,10 @@ services:
   - type: web
     name: ias-website
     runtime: node
-    plan: starter # 512MB/0.5CPU. Bump to "standard" (2GB) if the build/runtime OOMs.
+    # standard (2GB) — measured `next build` (Turbopack + Payload) peaks well
+    # past the starter tier's 512MB, so starter OOMs during the build. Runtime
+    # is light; if you later build elsewhere you could downshift the runtime.
+    plan: standard
     region: ohio
     branch: main
     buildCommand: npm ci && npm run build
