@@ -3,6 +3,9 @@ import { SITE } from "@/lib/site";
 import { INDUSTRY_PAGES } from "@/data/industryPages";
 import { getAllPosts, getCategories } from "@/lib/posts";
 
+// Regenerate at runtime so blog URLs appear (the DB isn't available at build).
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE.baseUrl;
   const staticPaths = [

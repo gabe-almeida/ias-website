@@ -73,30 +73,44 @@ function toMeta(p: CMSPost): PostMeta {
 }
 
 export async function getAllPosts(): Promise<PostMeta[]> {
-  const payload = await cached();
-  const { docs } = await payload.find({
-    collection: "posts",
-    where: { _status: { equals: "published" } },
-    sort: "-publishedAt",
-    depth: 1,
-    limit: 500,
-    overrideAccess: true,
-  });
-  return docs.map(toMeta);
+  try {
+    const payload = await cached();
+    const { docs } = await payload.find({
+      collection: "posts",
+      where: { _status: { equals: "published" } },
+      sort: "-publishedAt",
+      depth: 1,
+      limit: 500,
+      overrideAccess: true,
+    });
+    return docs.map(toMeta);
+  } catch (err) {
+    // On Render the SQLite disk is mounted only at RUNTIME, not during
+    // `next build`. DB reads at build time are therefore expected to fail —
+    // return empty so the build succeeds; runtime ISR repopulates once the
+    // disk is mounted. (Also covers a missing PAYLOAD_SECRET at build.)
+    console.warn("[posts] getAllPosts: DB unavailable (expected at build) —", (err as Error)?.message);
+    return [];
+  }
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  const payload = await cached();
-  const { docs } = await payload.find({
-    collection: "posts",
-    where: { slug: { equals: slug }, _status: { equals: "published" } },
-    depth: 2, // resolve cover + inline upload/relationship nodes in the body
-    limit: 1,
-    overrideAccess: true,
-  });
-  const p = docs[0];
-  if (!p) return null;
-  return { ...toMeta(p), content: p.content };
+  try {
+    const payload = await cached();
+    const { docs } = await payload.find({
+      collection: "posts",
+      where: { slug: { equals: slug }, _status: { equals: "published" } },
+      depth: 2, // resolve cover + inline upload/relationship nodes in the body
+      limit: 1,
+      overrideAccess: true,
+    });
+    const p = docs[0];
+    if (!p) return null;
+    return { ...toMeta(p), content: p.content };
+  } catch (err) {
+    console.warn("[posts] getPostBySlug: DB unavailable (expected at build) —", (err as Error)?.message);
+    return null;
+  }
 }
 
 export async function getCategories(): Promise<{ name: string; slug: string; count: number }[]> {
