@@ -75,7 +75,7 @@ export const INDUSTRIES: Industry[] = [
   {
     name: "Property & Facilities",
     icon: '<path d="M3 21V7l9-4 9 4v14"/><path d="M9 21v-6h6v6"/>',
-    desc: "Indoor air, water & material testing — asbestos, lead in paint, mold & VOCs, quick turnaround.",
+    desc: "Indoor air, water & material testing — asbestos, lead in paint and mold, quick turnaround.",
     slug: "facilities-testing",
   },
 ];

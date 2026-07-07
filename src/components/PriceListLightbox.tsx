@@ -149,9 +149,6 @@ export default function PriceListLightbox({
               >
                 {zoomed ? "Zoom out" : "Zoom in"}
               </button>
-              <span className="plb-hint">
-                Tap the image to {zoomed ? "zoom out" : "zoom in"} · pinch to zoom on mobile
-              </span>
             </div>
           </div>
         </div>

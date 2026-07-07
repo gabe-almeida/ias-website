@@ -582,7 +582,6 @@ footer{background:var(--navy);color:#fff;padding:70px 0 30px}
 .plb-zoom-btn{border:1px solid var(--line);background:#fff;color:var(--blue);font-weight:700;
   font-size:.78rem;padding:5px 12px;border-radius:var(--radius-pill);cursor:pointer;transition:.15s}
 .plb-zoom-btn:hover{border-color:var(--blue);color:var(--navy)}
-.plb-hint{font-family:var(--font-inter)}
 /* Inline text-link trigger variant (used in catalog foot) */
 .plb-link{background:none;border:0;padding:0;font:inherit;color:var(--blue);font-weight:700;
   cursor:pointer;text-decoration:none}
