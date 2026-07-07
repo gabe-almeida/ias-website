@@ -15,8 +15,8 @@ service on Render (not Vercel — Vercel is serverless and can't persist SQLite)
 
 ## First-time deploy (Render)
 1. **Create the service** from `render.yaml` (Dashboard → New → Blueprint). It provisions a `standard` web service (2 GB) + 5 GB disk at `/var/data`, and sets env vars (`PAYLOAD_SECRET` auto-generated, `DATABASE_URI=file:/var/data/blog.sqlite`, `MEDIA_DIR=/var/data/media`, `NEXT_PUBLIC_SITE_URL=https://iasamerica.com`). Standard is required because `next build` (Turbopack + Payload) peaks past the 512 MB `starter` tier and OOMs there.
-2. **First boot** auto-creates the DB schema on the disk (`db.push`).
-3. **Create the first admin**: visit `https://<service>/admin` → create-first-user. Choose role **Admin**.
+2. **First boot** auto-applies the DB schema on the disk via migrations (`prodMigrations` in `src/payload.config.ts` + `src/migrations/`). Note: `db.push` only syncs schema in *dev* — production uses migrations, so commit a migration (`npm run payload -- migrate:create`) for any schema change.
+3. **First admin is auto-seeded, not created via the public form.** Set `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` (and optionally `SEED_ADMIN_NAME`) as service env vars before the first deploy. On boot, if the Users collection is empty and those are set, an admin is created from them — so the public `/admin` create-first-user screen is never exposed. Log in with those credentials, rotate the password in `/admin → Users`, then unset the three `SEED_ADMIN_*` vars. (If you deploy without them, the create-first-user screen is reachable until an admin exists — avoid that.)
 4. **Seed the two legacy posts (one time):** in the Render Shell run `npm run seed:posts`. It's idempotent but should be run **once** — re-running overwrites those posts back to the markdown source, discarding later admin edits.
 5. **Point the domain**: add `iasamerica.com` to the Render service, then move DNS to Cloudflare (below).
 6. Runtime is light (mostly static/ISR pages) — if you ever want to trim cost, you can build on CI and run the runtime on a smaller tier; the **build** is what needs the 2 GB.
@@ -56,5 +56,11 @@ if `/admin` 500s with "missing secret key", start dev with the env exported
 (`set -a; . ./.env; set +a; npm run dev`). Production (Render env vars) is unaffected.
 
 ## Future schema changes
-`db.push: true` auto-syncs additive changes. For destructive changes (renames/drops)
-generate and review a migration first: `npm run payload -- migrate:create`.
+After editing any collection, generate + commit a migration (production applies
+migrations, not `push`):
+```
+npm run payload -- migrate:create    # snapshots the schema diff into src/migrations/
+npm run generate:types               # update payload-types.ts
+```
+Commit the new `src/migrations/*` file. On the next Render deploy, the adapter
+auto-applies pending migrations during boot.

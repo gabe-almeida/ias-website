@@ -34,6 +34,16 @@ services:
         value: /var/data/media
       - key: NEXT_PUBLIC_SITE_URL
         value: https://iasamerica.com
+      # First-admin bootstrap. On boot, if the Users collection is empty and
+      # these are set, an admin is auto-created so the public "create first
+      # user" screen never appears. Set once for the first deploy, then unset
+      # (and rotate the password in /admin) after you've logged in.
+      - key: SEED_ADMIN_EMAIL
+        sync: false
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      - key: SEED_ADMIN_NAME
+        value: Admin
       # Cloudflare Turnstile (bot-gate on /admin login). Create a widget in the
       # CF dashboard → Turnstile, then paste the keys here. Leave blank to disable.
       - key: NEXT_PUBLIC_TURNSTILE_SITE_KEY
