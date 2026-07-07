@@ -14,6 +14,12 @@ import { Users } from "./collections/Users";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+// Allow admin/API auth from both the canonical domain and Render's own URL
+// (RENDER_EXTERNAL_URL is auto-set), so /admin works on ias-website.onrender.com
+// before the domain is cut over, and on iasamerica.com after.
+const allowedOrigins = [siteUrl, process.env.RENDER_EXTERNAL_URL].filter(
+  (v): v is string => Boolean(v),
+);
 
 export default buildConfig({
   admin: {
@@ -45,8 +51,8 @@ export default buildConfig({
     push: true,
   }),
   sharp,
-  cors: [siteUrl],
-  csrf: [siteUrl],
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
   plugins: [
     seoPlugin({
