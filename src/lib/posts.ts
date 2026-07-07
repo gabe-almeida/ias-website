@@ -22,7 +22,8 @@ export type PostMeta = {
   author: string; // display: authors joined
   authors: string[];
   excerpt: string;
-  cover?: string; // display image URL
+  cover?: string; // hero-size display image URL (post page hero)
+  coverCard?: string; // card-size image URL (listing/category thumbnails)
   coverAlt?: string;
   ogImage?: string; // 1200x630 social-share URL
 };
@@ -67,6 +68,7 @@ function toMeta(p: CMSPost): PostMeta {
     authors: authors.length ? authors : ["IAS Editorial Team"],
     excerpt: p.excerpt,
     cover: sizes?.hero?.url ?? cover?.url ?? undefined,
+    coverCard: sizes?.card?.url ?? cover?.url ?? undefined,
     coverAlt: cover?.alt ?? undefined,
     ogImage: sizes?.og?.url ?? cover?.url ?? undefined,
   };

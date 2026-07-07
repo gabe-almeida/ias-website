@@ -12,8 +12,14 @@ export const Posts: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "_status", "publishedAt"],
-    // "Preview" button in admin opens the live public page.
-    preview: (doc) => (doc?.slug ? `/science-hub/${doc.slug}` : null),
+    // "Preview" button in admin opens the live public page — but only once the
+    // post is published: the public /science-hub/[slug] route reads published
+    // docs only (getPostBySlug filters _status=published), so previewing a
+    // draft would 404. Returning null here makes Payload omit the Preview
+    // button entirely on unpublished docs (PreviewButton renders null when the
+    // preview fn yields no URL). Published docs still get a working Preview.
+    preview: (doc) =>
+      doc?._status === "published" && doc?.slug ? `/science-hub/${doc.slug}` : null,
   },
   // Draft/publish workflow: drafts are never shown publicly.
   versions: { drafts: { autosave: false }, maxPerDoc: 25 },

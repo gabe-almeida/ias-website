@@ -37,3 +37,17 @@
   max-height: 60px;
   width: auto;
 }
+
+/* Hide the "Forgot password?" link on the /admin login screen.
+   Payload v3 always renders this link (no config flag disables it) and the
+   forgot-password flow emails a reset token — but this deployment has no SMTP
+   mailer, so the flow is a dead end: the user submits the form, is told
+   "check your email," and no message ever arrives. Removing the link keeps
+   users on the working paths (log in, or ask an admin to reset). The forgot
+   API route itself is left intact; only the on-screen entry point is removed.
+   Selector targets the sole direct <a> child of .login__form (the Link in
+   @payloadcms/next's LoginForm); the submit is a <button>, the inputs wrap in
+   a div. */
+.login__form > a {
+  display: none;
+}

@@ -86,6 +86,17 @@ export default async function CategoryPage({
                   href={`/science-hub/${p.slug}`}
                   className="post-card reveal"
                 >
+                  {p.coverCard && (
+                    <span className="post-card__thumb">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={p.coverCard}
+                        alt={p.coverAlt ?? ""}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                  )}
                   <span className="cat-chip">{p.category}</span>
                   <h3>{p.title}</h3>
                   <p className="excerpt">{p.excerpt}</p>

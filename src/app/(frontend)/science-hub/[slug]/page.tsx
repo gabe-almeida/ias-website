@@ -101,6 +101,20 @@ export default async function PostPage({
           </div>
         </header>
 
+        {/* Cover hero. Rendered only when a cover was uploaded — the field is
+            optional, so posts without one (e.g. the seeded posts) look exactly
+            as before. Plain <img> (not next/image) because the src is a
+            Payload-served upload URL (/api/media/...) of unknown intrinsic
+            dimensions; this matches how Payload's own Lexical renderer emits
+            inline upload images on this same route, and next/image has no
+            remotePatterns configured for it. CSS crops to a 16:9 band. */}
+        {p.cover && (
+          <figure className="post-hero">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.cover} alt={p.coverAlt ?? ""} decoding="async" />
+          </figure>
+        )}
+
         <section className="section">
           <div className="wrap">
             <div className="prose">
