@@ -11,7 +11,6 @@
   --maxw:1180px;--ease:cubic-bezier(.22,.61,.36,1);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
 body{margin:0;font-family:var(--font-jakarta),system-ui,sans-serif;color:var(--ink);background:var(--bg);
   line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 h1,h2,h3,h4,h5{font-family:var(--font-jakarta),sans-serif;line-height:1.12;letter-spacing:-.02em;margin:0;color:var(--navy);text-wrap:balance}
@@ -534,6 +533,19 @@ footer{background:var(--navy);color:#fff;padding:70px 0 30px}
   table.cat th:first-child,table.cat td:first-child{padding-left:16px;width:44%}
   table.cat thead th:nth-child(2),table.cat tbody td:nth-child(2){width:32%;font-size:.74rem}
   table.cat td.price,table.cat thead th.r{width:24%;padding-right:14px;padding-left:4px;font-size:.9rem;white-space:normal;overflow-wrap:break-word}
+}
+/* logo + CTA + burger no longer fit the 680px tier's own padding below ~430px */
+.btn-label-short{display:none}
+@media(max-width:430px){
+  .nav-inner{gap:8px}
+  .nav-cta{gap:6px}
+  .brand img{height:34px}
+  .btn-sm{padding:8px 12px;font-size:.78rem}
+  .burger{padding:6px}
+}
+@media(max-width:400px){
+  .btn-label-full{display:none}
+  .btn-label-short{display:inline}
 }
 
 /* ============================== PRICE LIST LIGHTBOX ============================== */

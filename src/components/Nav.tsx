@@ -116,7 +116,8 @@ export default function Nav() {
             <Phone /> {SITE.phone}
           </a>
           <Link href="/get-started" className="btn btn-primary btn-sm">
-            Submit a Sample
+            <span className="btn-label-full">Submit a Sample</span>
+            <span className="btn-label-short">Submit</span>
           </Link>
           <button
             className="burger"
