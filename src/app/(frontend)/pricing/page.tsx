@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Arrow, Svg, PageHero, CtaBand, PricePop } from "@/components/blocks";
 import PricingCatalog from "@/components/PricingCatalog";
+import PriceListLightbox from "@/components/PriceListLightbox";
 
 export const metadata: Metadata = {
   title: "Pricing & Test Catalog — Flat-Rate Analytical Testing | IAS",
@@ -30,14 +31,7 @@ export default function Pricing() {
         <div className="wrap">
           <PricePop />
           <div className="center" style={{ marginTop: 22 }}>
-            <a
-              href="/assets/ias-price-list.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost"
-            >
-              View Full Price List (PDF) <Arrow />
-            </a>
+            <PriceListLightbox />
           </div>
           <PricingCatalog />
           <div className="cards" style={{ marginTop: 40 }}>

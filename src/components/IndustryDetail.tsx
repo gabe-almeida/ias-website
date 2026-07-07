@@ -6,6 +6,7 @@ import { industryBySlug } from "@/data/industries";
 import { instrumentByAbbr } from "@/data/instruments";
 import { Svg, P, Arrow, Check } from "./icons";
 import { SectionHead, CtaBand, Steps } from "./blocks";
+import PriceListLightbox from "./PriceListLightbox";
 
 function IndustryHero({ d }: { d: IndustryPage }) {
   return (
@@ -136,14 +137,12 @@ function Tests({ d }: { d: IndustryPage }) {
                       <td>{t.method}</td>
                       <td className={`price${call ? " call" : ""}`}>
                         {t.priceHref ? (
-                          <a
-                            href={t.priceHref}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: "var(--blue)", fontWeight: 700 }}
-                          >
-                            {t.price} ↗
-                          </a>
+                          <PriceListLightbox
+                            className="plb-link"
+                            label={t.price}
+                            trailing=" ↗"
+                            pdfHref={t.priceHref}
+                          />
                         ) : (
                           t.price
                         )}
@@ -162,14 +161,12 @@ function Tests({ d }: { d: IndustryPage }) {
             <span>
               {d.priceListHref && (
                 <>
-                  <a
-                    href={d.priceListHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: "var(--blue)", fontWeight: 700 }}
-                  >
-                    View Price List ↗
-                  </a>{" "}
+                  <PriceListLightbox
+                    className="plb-link"
+                    label="View Price List"
+                    trailing=" ↗"
+                    pdfHref={d.priceListHref}
+                  />{" "}
                   ·{" "}
                 </>
               )}
@@ -277,14 +274,7 @@ function Packages({ d }: { d: IndustryPage }) {
         </div>
         {d.priceListHref && (
           <div className="center" style={{ marginTop: 22 }}>
-            <a
-              href={d.priceListHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost"
-            >
-              View Full Price List (PDF) <Arrow />
-            </a>
+            <PriceListLightbox pdfHref={d.priceListHref} />
           </div>
         )}
       </div>

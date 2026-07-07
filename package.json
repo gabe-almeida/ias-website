@@ -11,7 +11,8 @@
     "payload": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
     "generate:types": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "generate:importmap": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:importmap",
-    "seed:posts": "PAYLOAD_CONFIG_PATH=src/payload.config.ts tsx scripts/seed-posts.ts"
+    "seed:posts": "PAYLOAD_CONFIG_PATH=src/payload.config.ts tsx scripts/seed-posts.ts",
+    "regen:pricelist": "python3 scripts/regen-price-list-image.py"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "^3.85.2",

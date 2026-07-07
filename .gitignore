@@ -48,3 +48,6 @@ next-env.d.ts
 
 # Claude Code uploaded-file scratch dir
 **/.tmp-attachments/
+
+# Playwright MCP session artifacts (snapshots/screenshots/console logs)
+**/.playwright-mcp/

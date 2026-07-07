@@ -494,8 +494,8 @@ footer{background:var(--navy);color:#fff;padding:70px 0 30px}
   .stats-grid{grid-template-columns:1fr 1fr;gap:24px}
   .stat+.stat{border-left:0}
 }
-@media(max-width:1080px){ .nav-phone{display:none} }
-@media(max-width:940px){
+@media(max-width:1460px){
+  .nav-phone{display:none}
   .nav-links{display:none}
   .burger{display:flex}
   .nav-links.open{display:flex;position:absolute;top:80px;left:0;right:0;flex-direction:column;background:#fff;padding:14px 24px 22px;box-shadow:var(--shadow);border-bottom:1px solid var(--line);gap:2px;
@@ -534,4 +534,47 @@ footer{background:var(--navy);color:#fff;padding:70px 0 30px}
   table.cat th:first-child,table.cat td:first-child{padding-left:16px;width:44%}
   table.cat thead th:nth-child(2),table.cat tbody td:nth-child(2){width:32%;font-size:.74rem}
   table.cat td.price,table.cat thead th.r{width:24%;padding-right:14px;padding-left:4px;font-size:.9rem;white-space:normal;overflow-wrap:break-word}
+}
+
+/* ============================== PRICE LIST LIGHTBOX ============================== */
+/* Inline modal for "View Full Price List" — image quick-view + PDF download.
+   z-index 100 sits above nav(60)/mega(70). Scoped .plb-* keeps it self-contained. */
+.plb-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;
+  background:rgba(7,29,61,.72);backdrop-filter:blur(3px);padding:18px;
+  animation:plb-fade .18s var(--ease)}
+@keyframes plb-fade{from{opacity:0}to{opacity:1}}
+.plb-panel{width:min(960px,100%);max-height:92vh;display:flex;flex-direction:column;
+  background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
+  overflow:hidden;animation:plb-pop .2s var(--ease)}
+@keyframes plb-pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.plb-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;border-bottom:1px solid var(--line);background:var(--bg-soft)}
+.plb-title{font-weight:800;color:var(--navy);font-size:1.02rem}
+.plb-actions{display:flex;align-items:center;gap:10px}
+.plb-dl{display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:.85rem;
+  color:var(--blue);text-decoration:none}
+.plb-dl:hover{color:var(--orange)}
+.plb-dl svg{width:15px;height:15px}
+.plb-close{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;
+  border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;transition:.15s}
+.plb-close:hover{border-color:var(--orange);color:var(--orange)}
+.plb-close svg{width:17px;height:17px}
+.plb-scroll{overflow:auto;flex:1 1 auto;-webkit-overflow-scrolling:touch;touch-action:pinch-zoom;
+  background:#f1f4fa}
+/* Fit view: image scales to container width, readable at a glance. */
+.plb-img{display:block;width:100%;height:auto;cursor:zoom-in}
+/* Zoomed: 1.8x natural, container scrolls; cursor signals zoom-out. */
+.plb-img-zoom{width:180%;max-width:none;cursor:zoom-out}
+.plb-foot{display:flex;align-items:center;gap:14px;padding:10px 18px;border-top:1px solid var(--line);
+  background:var(--bg-soft);font-size:.78rem;color:var(--slate)}
+.plb-zoom-btn{border:1px solid var(--line);background:#fff;color:var(--blue);font-weight:700;
+  font-size:.78rem;padding:5px 12px;border-radius:var(--radius-pill);cursor:pointer;transition:.15s}
+.plb-zoom-btn:hover{border-color:var(--blue);color:var(--navy)}
+.plb-hint{font-family:var(--font-inter)}
+/* Inline text-link trigger variant (used in catalog foot) */
+.plb-link{background:none;border:0;padding:0;font:inherit;color:var(--blue);font-weight:700;
+  cursor:pointer;text-decoration:none}
+.plb-link:hover{color:var(--orange)}
+@media (prefers-reduced-motion:reduce){
+  .plb-overlay,.plb-panel{animation:none}
 }
