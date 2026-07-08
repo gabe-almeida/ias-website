@@ -47,10 +47,10 @@ export default function Nav() {
           <Image
             src="/assets/ias-logo.png"
             alt="Industrial Analytical Services"
-            width={200}
-            height={50}
+            width={154}
+            height={56}
             priority
-            style={{ height: 50, width: "auto" }}
+            style={{ height: 56, width: "auto" }}
           />
         </Link>
         <nav className={`nav-links${open ? " open" : ""}`} id="navLinks">

@@ -1,19 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SITE } from "@/lib/site";
-
-const MOLECULE = `<svg class="molecule" width="208" height="52" viewBox="0 0 208 52" fill="none">
-  <line x1="22" y1="18" x2="34" y2="34" stroke="#fff" stroke-width="2.5"/>
-  <line x1="50" y1="18" x2="38" y2="34" stroke="#fff" stroke-width="2.5"/>
-  <circle cx="18" cy="15" r="11" fill="#05409B" stroke="#fff" stroke-width="1.5"/>
-  <circle cx="54" cy="15" r="11" fill="#FC6007" stroke="#fff" stroke-width="1.5"/>
-  <circle cx="36" cy="37" r="11" fill="#E9A50A" stroke="#fff" stroke-width="1.5"/>
-  <text x="18" y="20" font-family="Plus Jakarta Sans" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">I</text>
-  <text x="54" y="20" font-family="Plus Jakarta Sans" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">S</text>
-  <text x="36" y="42" font-family="Plus Jakarta Sans" font-size="13" font-weight="800" fill="#fff" text-anchor="middle">A</text>
-  <text x="74" y="21" font-family="Plus Jakarta Sans" font-size="15" letter-spacing="0.5" font-weight="800" fill="#fff">INDUSTRIAL</text>
-  <text x="74" y="40" font-family="Plus Jakarta Sans" font-size="15" letter-spacing="0.5" font-weight="800" fill="#fff">ANALYTICAL</text>
-  <text x="75" y="50" font-family="Plus Jakarta Sans" font-size="8" letter-spacing="3" font-weight="700" fill="#E9A50A">SERVICES</text>
-</svg>`;
 
 export default function Footer() {
   return (
@@ -21,7 +8,13 @@ export default function Footer() {
       <div className="wrap">
         <div className="foot-grid">
           <div className="foot-brand">
-            <span dangerouslySetInnerHTML={{ __html: MOLECULE }} />
+            <Image
+              className="foot-logo"
+              src="/assets/ias-logo.png"
+              alt="Industrial Analytical Services"
+              width={154}
+              height={56}
+            />
             <p>
               An independent analytical laboratory for industrial, commercial &amp;
               biomedical testing. Founded 2000.
