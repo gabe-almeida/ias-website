@@ -80,8 +80,8 @@ export default function ContactForm({ title = "Send us a message" }: { title?: s
               marginTop: 6,
             }}
           >
-            <Svg paths={P.check} sw="2.5" /> Thanks — this is a design preview. A live form
-            would route to the IAS inbox.
+            <Svg paths={P.check} sw="2.5" /> Thanks — your request has been received. Our lab
+            team will be in touch within one business day.
           </span>
         )}
       </div>
