@@ -70,6 +70,7 @@ export interface Config {
     posts: Post;
     categories: Category;
     media: Media;
+    submissions: Submission;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -81,6 +82,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    submissions: SubmissionsSelect<false> | SubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -276,6 +278,25 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Sample-testing inquiries submitted from the public website.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "submissions".
+ */
+export interface Submission {
+  id: number;
+  firstName: string;
+  lastName: string;
+  company: string;
+  industry?: string | null;
+  phone: string;
+  email: string;
+  message?: string | null;
+  website?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -310,6 +331,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'submissions';
+        value: number | Submission;
       } | null)
     | ({
         relationTo: 'users';
@@ -454,6 +479,22 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "submissions_select".
+ */
+export interface SubmissionsSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  company?: T;
+  industry?: T;
+  phone?: T;
+  email?: T;
+  message?: T;
+  website?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

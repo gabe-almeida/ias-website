@@ -5,14 +5,19 @@ export function Svg({
   paths,
   sw = "2",
   className,
+  size,
 }: {
   paths: string;
   sw?: string | number;
   className?: string;
+  /** Optional explicit width/height in px. Omit to size via CSS (default). */
+  size?: number;
 }) {
   return (
     <svg
       viewBox="0 0 24 24"
+      width={size}
+      height={size}
       fill="none"
       stroke="currentColor"
       strokeWidth={sw}
