@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { canUpdatePost, isAuthorOrAbove, isEditor, publishedOrAuthed } from "../access";
+import { canDeletePost, canUpdatePost, isAuthorOrAbove, publishedOrAuthed } from "../access";
 import { slugField } from "../fields/slug";
 import { revalidatePost, revalidatePostDelete } from "../hooks/revalidatePost";
 
@@ -27,7 +27,7 @@ export const Posts: CollectionConfig = {
     read: publishedOrAuthed,
     create: isAuthorOrAbove,
     update: canUpdatePost,
-    delete: isEditor,
+    delete: canDeletePost,
   },
   hooks: {
     beforeChange: [

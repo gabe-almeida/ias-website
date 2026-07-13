@@ -30,13 +30,17 @@ export const publishedOrAuthed: Access = ({ req: { user } }) => {
   return { _status: { equals: "published" } };
 };
 
-// Admins/editors may update any post; authors only their own.
-export const canUpdatePost: Access = ({ req: { user } }) => {
+// Admins/editors may update/delete any post; authors only their own. Update and
+// delete share the same rule — an author who can edit their draft can also throw
+// it away.
+const ownPostOrAbove: Access = ({ req: { user } }) => {
   if (!user) return false;
   if (hasRole(user, "admin", "editor")) return true;
   if (hasRole(user, "author")) return { authors: { contains: (user as { id: string | number }).id } };
   return false;
 };
+export const canUpdatePost = ownPostOrAbove;
+export const canDeletePost = ownPostOrAbove;
 
 // A user may read/update their own record; admins may act on anyone.
 export const adminOrSelf: Access = ({ req: { user }, id }) => {
