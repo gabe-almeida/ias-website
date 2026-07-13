@@ -56,7 +56,7 @@ export default function ContactForm({ title = "Send us a message" }: { title?: s
         <p style={{ margin: 0, color: "var(--muted, #556)" }}>
           Thanks — your request has landed with our lab team. We&rsquo;ll be in touch within one
           business day. Have an SDS or spec sheet? Email it to{" "}
-          <a href={`mailto:${SITE.email}`}>{SITE.email}</a> and we&rsquo;ll match it to your request.
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>{" "}and we&rsquo;ll match it to your request.
         </p>
       </div>
     );
@@ -106,7 +106,7 @@ export default function ContactForm({ title = "Send us a message" }: { title?: s
       </div>
       <p className="file-hint" style={{ margin: "-2px 0 4px", fontSize: ".82rem", color: "var(--muted, #667)" }}>
         Have an SDS, spec sheet, or sample description? Email it to{" "}
-        <a href={`mailto:${SITE.email}`}>{SITE.email}</a> and we&rsquo;ll match it to your request.
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>{" "}and we&rsquo;ll match it to your request.
       </p>
       {/* Honeypot: hidden from users; bots that fill it are rejected server-side. */}
       <input
