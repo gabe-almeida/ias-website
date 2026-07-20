@@ -51,12 +51,12 @@ services:
       - key: TURNSTILE_SECRET_KEY
         sync: false
       # Lead-form email notifications. Submissions are always saved to /admin;
-      # these enable the optional real-time email alert via Resend (Render blocks
-      # SMTP, so an HTTP email API is required). Leave RESEND_API_KEY blank to
-      # disable email — capture still works. See .env.example for details.
+      # RESEND_API_KEY enables the optional real-time email alert via Resend
+      # (Render blocks SMTP, so an HTTP email API is required). Leave it blank to
+      # disable email — capture still works. This is the ONLY email-related env
+      # var: it is a secret/credential. The recipient and sender addresses are
+      # NOT env vars — they live in the `notification-settings` global (SQLite,
+      # editable at /admin → Leads → Email Notifications) so the client can change
+      # them without a redeploy. See .env.example / globals/NotificationSettings.ts.
       - key: RESEND_API_KEY
-        sync: false
-      - key: SUBMISSIONS_TO
-        value: info@iasamerica.com
-      - key: SUBMISSIONS_FROM
         sync: false

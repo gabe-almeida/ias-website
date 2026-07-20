@@ -16,12 +16,13 @@ import type { CollectionAfterChangeHook } from "payload";
 // RESEND_API_KEY is set in the environment (e.g. once the customer provisions
 // Resend), with zero code changes.
 //
-// Env:
-//   RESEND_API_KEY   — Resend secret. Absent → capture still works, email skipped.
-//   SUBMISSIONS_TO   — recipient inbox (default: info@iasamerica.com).
-//   SUBMISSIONS_FROM — verified sender. Until the customer verifies their domain
-//                      in Resend, Resend only delivers from onboarding@resend.dev
-//                      to the account owner, so that is the safe default.
+// Config split (deliberate):
+//   RESEND_API_KEY — Render env SECRET. Absent → capture still works, email skipped.
+//                    A credential, so it stays out of the DB.
+//   recipient + sender — read from the `notification-settings` GLOBAL (SQLite,
+//                    editable at /admin → Leads → Email Notifications) so the
+//                    client changes them with no redeploy. See globals/NotificationSettings.ts
+//                    for the defaults and why they are what they are.
 export const notifyOnSubmission: CollectionAfterChangeHook = async ({
   doc,
   operation,
@@ -38,8 +39,15 @@ export const notifyOnSubmission: CollectionAfterChangeHook = async ({
     return doc;
   }
 
-  const to = process.env.SUBMISSIONS_TO || "info@iasamerica.com";
-  const from = process.env.SUBMISSIONS_FROM || "IAS Website <onboarding@resend.dev>";
+  // Recipient + sender are admin-editable content, not env. Read them from the
+  // global; fall back to the same defaults the global declares in case the row
+  // has not been initialized yet (defensive — findGlobal returns defaults once
+  // the table exists, so this fallback only matters if the read itself throws).
+  const settings = await req.payload
+    .findGlobal({ slug: "notification-settings" })
+    .catch(() => null);
+  const to = settings?.notifyTo || "nick@etrlabs.com";
+  const from = settings?.notifyFrom || "IAS Website <onboarding@resend.dev>";
 
   const lines = [
     `Name:     ${doc.firstName} ${doc.lastName}`,

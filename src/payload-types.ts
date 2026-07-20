@@ -93,8 +93,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'notification-settings': NotificationSetting;
+  };
+  globalsSelect: {
+    'notification-settings': NotificationSettingsSelect<false> | NotificationSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -559,6 +563,36 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Where new website lead inquiries are emailed, and the sender they come from. No redeploy needed — changes take effect on the next submission.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-settings".
+ */
+export interface NotificationSetting {
+  id: number;
+  /**
+   * The inbox that receives each new sample inquiry. Until the iasamerica.com domain is verified in Resend, this must be the Resend account owner's email (nick@etrlabs.com) — Resend only delivers the shared onboarding sender to the owner.
+   */
+  notifyTo: string;
+  /**
+   * The verified sender the alert is sent as. Keep the default until iasamerica.com is verified in Resend, then change to e.g. "IAS Website <noreply@iasamerica.com>".
+   */
+  notifyFrom: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-settings_select".
+ */
+export interface NotificationSettingsSelect<T extends boolean = true> {
+  notifyTo?: T;
+  notifyFrom?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
