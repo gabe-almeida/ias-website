@@ -11,12 +11,14 @@ import { isAuthenticated, isAdmin } from "../access";
 // WHERE it is read: src/hooks/submissionEmail.ts loads this global on every new
 // submission to decide who gets the alert and what From address to send it as.
 //
-// Defaults below make notifications work the moment RESEND_API_KEY is present,
-// with no admin setup: they deliver to the Resend account owner (nick@etrlabs.com)
-// from Resend's shared onboarding sender — the only combo Resend delivers before
-// the iasamerica.com domain is verified. Once the domain IS verified in Resend,
-// an admin edits `notifyFrom` to an @iasamerica.com sender and `notifyTo` to the
-// real inbox — all from the admin UI.
+// Defaults below target the real business inbox (info@iasamerica.com), sent from
+// an @iasamerica.com sender. IMPORTANT: for Resend to actually DELIVER to an
+// external address like info@iasamerica.com, the iasamerica.com domain must be
+// verified in Resend (Resend refuses to send to non-owner addresses until a
+// domain is verified). So the delivery prerequisites are: (1) RESEND_API_KEY set
+// in Render, and (2) iasamerica.com verified in Resend. Until both are true the
+// lead is still captured to /admin — only the email alert is skipped/errored
+// (fail-open). An admin can override either address at /admin with no redeploy.
 export const NotificationSettings: GlobalConfig = {
   slug: "notification-settings",
   label: "Email Notifications",
@@ -37,12 +39,12 @@ export const NotificationSettings: GlobalConfig = {
       type: "email",
       label: "Send lead alerts to",
       required: true,
-      defaultValue: "nick@etrlabs.com",
+      defaultValue: "info@iasamerica.com",
       admin: {
         description:
-          "The inbox that receives each new sample inquiry. Until the iasamerica.com " +
-          "domain is verified in Resend, this must be the Resend account owner's email " +
-          "(nick@etrlabs.com) — Resend only delivers the shared onboarding sender to the owner.",
+          "The inbox that receives each new sample inquiry. Delivery to this address " +
+          "requires the iasamerica.com domain to be verified in Resend (Resend won't " +
+          "send to a non-owner address until then).",
       },
     },
     {
@@ -50,11 +52,13 @@ export const NotificationSettings: GlobalConfig = {
       type: "text",
       label: "From address",
       required: true,
-      defaultValue: "IAS Website <onboarding@resend.dev>",
+      defaultValue: "IAS Website <noreply@iasamerica.com>",
       admin: {
         description:
-          "The verified sender the alert is sent as. Keep the default until iasamerica.com " +
-          'is verified in Resend, then change to e.g. "IAS Website <noreply@iasamerica.com>".',
+          "The verified sender the alert is sent as. This must be an address on a domain " +
+          "verified in Resend. If iasamerica.com is NOT yet verified, sends will fail until " +
+          'it is — as a stopgap you can set this to "IAS Website <onboarding@resend.dev>" ' +
+          "(Resend's shared sender), which only delivers to the Resend account owner's inbox.",
       },
     },
   ],

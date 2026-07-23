@@ -15,8 +15,8 @@ const run = async () => {
   // 1) Fresh DB → defaults from the global (what the hook reads).
   const def = await payload.findGlobal({ slug: "notification-settings" });
   const okDefaults =
-    def.notifyTo === "nick@etrlabs.com" &&
-    def.notifyFrom === "IAS Website <onboarding@resend.dev>";
+    def.notifyTo === "info@iasamerica.com" &&
+    def.notifyFrom === "IAS Website <noreply@iasamerica.com>";
   console.log(
     `[1] global defaults → notifyTo="${def.notifyTo}", notifyFrom="${def.notifyFrom}" ` +
       (okDefaults ? "✓" : "✗"),

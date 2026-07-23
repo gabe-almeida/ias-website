@@ -46,8 +46,8 @@ export const notifyOnSubmission: CollectionAfterChangeHook = async ({
   const settings = await req.payload
     .findGlobal({ slug: "notification-settings" })
     .catch(() => null);
-  const to = settings?.notifyTo || "nick@etrlabs.com";
-  const from = settings?.notifyFrom || "IAS Website <onboarding@resend.dev>";
+  const to = settings?.notifyTo || "info@iasamerica.com";
+  const from = settings?.notifyFrom || "IAS Website <noreply@iasamerica.com>";
 
   const lines = [
     `Name:     ${doc.firstName} ${doc.lastName}`,
